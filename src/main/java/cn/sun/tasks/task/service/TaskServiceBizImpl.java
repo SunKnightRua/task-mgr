@@ -1,13 +1,17 @@
 package cn.sun.tasks.task.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.sun.tasks.task.dao.TaskDao;
 import cn.sun.tasks.task.domain.Task;
+import cn.sun.tasks.task.vo.TaskVo;
 
 @Service
 public class TaskServiceBizImpl implements TaskService {
@@ -16,88 +20,148 @@ public class TaskServiceBizImpl implements TaskService {
 	private TaskDao taskDao;
 	
 	@Override
-	public List<Task> getAllTasks() {
-
-		List<Task> tasks =taskDao.getAllTasks();
-		return tasks;
+	public List<TaskVo> getAllTasks() {
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		return allTasks;
 	}
-
+	
 	@Override
-	public Task getTaskById(Integer id) {
-
-		Task task = taskDao.getTaskById(id);
+	public TaskVo getTaskById(Integer id) {
+		TaskVo task = taskDao.getTaskById(id);
 		return task;
 	}
-
+	
 	@Override
-	public List<Task> getTaskById(List<Integer> list) {
-
-		List<Task> tasks =new ArrayList<Task>();
-		if(list != null){
-			for(Integer id : list){
-				tasks.add(taskDao.getTaskById(id));
+	public List<TaskVo> getTaskByIds(List<Integer> ids) {
+		List<TaskVo> taskList = new ArrayList<TaskVo>();
+		if(ids != null) {
+			for(Integer id : ids) {
+				taskList.add(taskDao.getTaskById(id));
 			}
 		}
-		return tasks;
+		return taskList;
 	}
-
+	
 	@Override
-	public void insertTask(Task task) {
-
-		taskDao.insertTask(task);
-	}
-
-	@Override
-	public void updateTask(Task task) {
-
-		taskDao.updateTask(task);
-	}
-
-	@Override
-	public void deleteTask(Integer id) {
-
-		taskDao.deleteTask(id);
-	}
-
-	@Override
-	public List<Task> getCompletedTasks() {
-		
-		List<Task> completedTasks = taskDao.getCompletedTasks();
-		return completedTasks;
-	}
-
-	@Override
-	public List<Task> getOverdueTasks() {
-//		1.有实际完成时间
-//			已完成
-//				最大实际完成时间>最大期望完成时间
-//			未完成
-//				当前系统时间>最大期望完成时间
-
-//		2.没有实际完成时间，根据当前判断
-//			任务未完成且当前时间大于最大期望完成时间
-		
-		return null;
-	}
-
-	@Override
-	public List<Task> getTodos() {
-		
-		List<Task> todos=taskDao.getTodos();
+	public List<TaskVo> getTodos() {
+		List<TaskVo> todos = new ArrayList<>();
+		//获取所有任务，将符合条件的任务添加进todos
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		Date date =new Date();
+		for(TaskVo task : allTasks) {
+			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
+				if(task.getBeginTimeActual() == null) {
+					if(task.getEndTimeExcepted().after(date)) {
+						todos.add(task);
+					}
+				}
+			}
+		}
 		return todos;
 	}
 
 	@Override
-	public List<Task> getPresentTasks() {
-		List<Task> presentTasks = taskDao.getPresentTasks();
+	public List<TaskVo> getPresentTasks() {
+		List<TaskVo> presentTasks = new ArrayList<>();
+		//获取所有任务，将符合条件的任务添加进presentTasks
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		Date date = new Date();
+		for(TaskVo task : allTasks) {
+			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
+				if(task.getBeginTimeActual() != null 
+						&& date.before(task.getEndTimeExcepted())) {
+					presentTasks.add(task);
+				}
+			}
+		}
+		
 		return presentTasks;
 	}
 
 	@Override
-	public List<Task> getTasksByPriority(Enum priority) {
-		List<Task> tasks = taskDao.getTasksByPriority(priority);
-		return tasks;
+	public List<TaskVo> getTasksByPriority(Enum priority) {
+		List<TaskVo> taskList = new ArrayList<>();
+		//获取所有任务，将符合条件的任务添加进taskList
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		for(TaskVo task : allTasks) {
+			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
+				if(priority.equals(task.getPriority())) {
+					taskList.add(task);
+				}
+			}
+		}
+		
+		return taskList;
+	}
+
+	@Override
+	public List<TaskVo> getOverdueTasks() {
+		List<TaskVo> overdueTasks = new ArrayList<>();
+		//获取所有任务，将符合条件的任务添加进overdueTasks
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		Date date = new Date();
+		for(TaskVo task : allTasks) {
+			if(task.getIsDelete() != 1){
+				if(task.getBeginTimeActual() == null 
+						&& task.getEndTimeExcepted().before(date)) {
+					overdueTasks.add(task);
+				}else if (task.getBeginTimeActual() != null ){
+					if(task.getIsComplete() ==1 && task.getEndTimeActual().after(task.getEndTimeExcepted())){
+						overdueTasks.add(task);
+					}else if(task.getIsComplete() ==0 && date.after(task.getEndTimeExcepted())){
+						overdueTasks.add(task);
+					}
+					
+				}
+			}
+		}
+		
+		return overdueTasks;
 	}
 	
+	
+	
 
+
+	@Override
+	public void insertTask(TaskVo taskVo) {
+		taskDao.insertTask(taskVo);
+	}
+
+	@Override
+	public void updateTask(TaskVo taskVo) {
+		taskDao.updateTask(taskVo);
+	}
+
+	@Override
+	public void deleteTask(Integer id) {
+		taskDao.deleteTask(id);
+	}
+
+	@Override
+	public List<TaskVo> getCompletedTasks() {
+		List<TaskVo> completedTasks = new ArrayList<>();
+		
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		for(TaskVo task : allTasks) {
+			if(task.getIsComplete() == 1) {
+				completedTasks.add(task);
+			}
+		}
+		
+		return completedTasks;
+	}
+
+	@Override
+	public double getPercentOfCompletedTasks() {
+		Double percentOfCompletedTasks = new Double(0);
+		List<TaskVo> completedTasks=this.getCompletedTasks();
+		List<TaskVo> allTasks = taskDao.getAllTasks();
+		if(allTasks.size() !=0){
+			percentOfCompletedTasks = (double) (completedTasks.size()/allTasks.size());
+		}
+		
+		return percentOfCompletedTasks;
+	}
+	
 }

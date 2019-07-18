@@ -1,15 +1,19 @@
-package cn.sun.tasks.task.domain;
+package cn.sun.tasks.task.vo;
 
 import java.util.Date;
 
-public class Task {
-	
+public class TaskVo {
+
 	private int id;
 	private String content;
 	private String desc;
 	private byte priority;
 	private byte isHabbit;
 	private byte isComplete;
+	private Date beginTimeExpected;
+	private Date endTimeExcepted;
+	private Date beginTimeActual;
+	private Date endTimeActual;
 	private Date createTime;
 	private Date updateTime;
 	private Date deleteTime;
@@ -50,6 +54,30 @@ public class Task {
 	public void setIsComplete(byte isComplete) {
 		this.isComplete = isComplete;
 	}
+	public Date getBeginTimeExpected() {
+		return beginTimeExpected;
+	}
+	public void setBeginTimeExpected(Date beginTimeExpected) {
+		this.beginTimeExpected = beginTimeExpected;
+	}
+	public Date getEndTimeExcepted() {
+		return endTimeExcepted;
+	}
+	public void setEndTimeExcepted(Date endTimeExcepted) {
+		this.endTimeExcepted = endTimeExcepted;
+	}
+	public Date getBeginTimeActual() {
+		return beginTimeActual;
+	}
+	public void setBeginTimeActual(Date beginTimeActual) {
+		this.beginTimeActual = beginTimeActual;
+	}
+	public Date getEndTimeActual() {
+		return endTimeActual;
+	}
+	public void setEndTimeActual(Date endTimeActual) {
+		this.endTimeActual = endTimeActual;
+	}
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -74,6 +102,5 @@ public class Task {
 	public void setIsDelete(byte isDelete) {
 		this.isDelete = isDelete;
 	}
-	
 	
 }
