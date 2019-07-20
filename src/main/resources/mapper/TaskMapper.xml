@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sun.tasks.task.dao.TaskDao">
+<resultMap type="cn.sun.tasks.task.domain.Task" id="taskMap">
+		<id property="id" column="id"/>
+		<result property="content" column="content"/>
+		<result property="desc" column="desc"/>
+		<result property="priority" column="priority"/>
+		<result property="isHabit" column="is_habit"/>
+		<result property="isComplete" column="is_complete"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="deleteTime" column="delete_time"/>
+		<result property="isDelete" column="is_delete"/>
+		
+		<collection property="timeExpecteds" ofType="cn.sun.tasks.timeexpected.domain.TimeExpected" column="id">
+			<id column="task_id" property="taslId"/><!-- 这里的column对应的是下面查询的别名，而不是表字段名 -->
+			<result column="begin_time_expected" property="beginTimeExpected"/><!-- property对应JavaBean中的属性名 -->
+			<result column="end_time_expected" property="endTimeExpected"/>
+		</collection>
+		
+		<collection property="timeActuals" ofType="cn.sun.tasks.timeactual.domain.TimeActual" column="id">
+			<id column="task_id" property="taslId"/><!-- 这里的column对应的是下面查询的别名，而不是表字段名 -->
+			<result column="begin_time_actual" property="beginTimeActual"/><!-- property对应JavaBean中的属性名 -->
+			<result column="end_time_actual" property="endTimeActual"/>
+		</collection>
+</resultMap>
+
+<!-- 查询所有任务 -->
+<select id="getAllTasks" resultMap="taskMap">
+SELECT
+	t.id,
+	t.content,
+	t.`desc`,
+	t.priority,
+	t.is_habit,
+	te.begin_time_expected,
+	te.end_time_expected,
+	ta.begin_time_actual,
+	ta.end_time_actual,
+	t.create_time,
+	t.update_time,
+	t.delete_time,
+	t.is_complete,
+	t.is_delete
+FROM
+	(
+		t_task t
+		LEFT JOIN t_time_expected te ON t.id = te.task_id
+	)
+LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+</select>
+
+<!-- 根据id查询任务 -->
+<select id="getTaskById" parameterType="Integer" resultMap="taskMap">
+SELECT
+	t.id,
+	t.content,
+	t.`desc`,
+	t.priority,
+	t.is_habit,
+	te.begin_time_expected,
+	te.end_time_expected,
+	ta.begin_time_actual,
+	ta.end_time_actual,
+	t.create_time,
+	t.update_time,
+	t.delete_time,
+	t.is_complete,
+	t.is_delete
+FROM
+	(
+		(
+			t_task t
+			LEFT JOIN t_time_expected te ON t.id = te.task_id
+		)
+		LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+	)
+WHERE
+	t.id = #{id}
+</select>
+
+<!-- 添加任务 -->
+<!-- 
+<insert id="insertTask" parameterType="cn.sun.tasks.task.domain.Task">
+INSERT INTO t_task (
+	content,
+	`desc`,
+	priority,
+	is_habit,
+	create_time
+)
+VALUES
+	(
+		#{task.content},
+		#{task.desc},
+		#{task.priority},
+		#{task.is_habit},
+		#{task.create_time},
+	)
+</insert>
+
+更新任务
+<update id="updateTask" parameterMap="cn.sun.tasks.task.domain.Task">
+
+</update> 
+-->
+
+<!-- 删除任务 -->
+
+<update id="deleteTask" parameterType="Integer">
+UPDATE t_task
+SET is_delete = 1
+WHERE
+	id = #{id}
+</update> 
+
+</mapper>

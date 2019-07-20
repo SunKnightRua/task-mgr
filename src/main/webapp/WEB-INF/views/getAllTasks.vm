@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>show all tasks</title>
+</head>
+<body>
+<form action="" method="get">
+	<table border="1" width="80%" align="center">
+		<thead>
+			<tr>
+				<th colspan="12" align="center">任务列表</th>
+			</tr>
+		</thead>
+		<tr>
+			<td align="center">全选</td>
+			<td align="center">任务id</td>
+			<td align="center">任务</td>
+			<td align="center">任务描述</td>
+			<td align="center">优先级</td>
+			<td align="center">日常任务</td>
+			<td align="center">预期开始时间</td>
+			<td align="center">预期结束时间</td>
+			<td align="center">实际开始时间</td>
+			<td align="center">实际结束时间</td>
+			<td align="center">创建时间</td>
+			<td align="center">更新时间</td>
+			<td align="center">已完成</td>
+		</tr>
+		#foreach($!task in $!tasks)
+		<tr>
+			<td align="center"><input type="checkbox"/></td>
+			<td align="center">$!task.id</td>
+			<td align="center">$!task.content</td>
+			<td align="center">$!task.desc</td>
+			
+			##优先级
+			<td align="center">
+			#if ($!task.priority == 1)
+			紧急重要
+			#elseif ($!task.priority == 2)
+			紧急不重要 
+			#elseif ($!task.priority == 3)
+			不紧急重要
+			#elseif ($!task.priority == 4)
+			不紧急不重要
+			#end
+			</td> 
+			
+			##日常任务
+			<td align="center">
+			#if($!task.isHabit == 0)
+			否 
+			#elseif ($!task.isHabit == 1)
+			是
+			#end
+			</td>
+			
+			##预期开始时间
+			<td>
+			#foreach($!timeExpected in $!task.timeExpecteds)
+				$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeExpected.beginTimeExpected)</br>
+			#end
+			</td>
+			##预期结束时间
+			<td>
+			#foreach($!timeExpected in $!task.timeExpecteds)
+			$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeExpected.endTimeExpected)</br>
+			#end
+			</td> 
+			
+			##实际开始时间
+			<td>
+			#foreach($!timeActual in $!task.timeActuals)
+			$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeActual.beginTimeActual)</br>
+			#end
+			</td>
+			##实际结束时间
+			<td>
+			#foreach($!timeActual in $!task.timeActuals)
+			$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeActual.endTimeActual)</br>
+			#end
+			</td> 
+			
+			<td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!task.createTime)</td>
+			<td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!task.updateTime)</td>
+			
+			##已完成
+			<td align="center">
+			#if($!task.isComplete == 0)
+			否
+			#elseif($!task.isHabit == 1)
+			是
+			#end
+			</td>
+		</tr>
+		#end
+	</table>
+</form>
+</body>
+</html>

@@ -1,17 +1,16 @@
 package cn.sun.tasks.task.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.sun.tasks.task.dao.TaskDao;
 import cn.sun.tasks.task.domain.Task;
-import cn.sun.tasks.task.vo.TaskVo;
+import cn.sun.tasks.timeexpected.domain.TimeExpected;
 
 @Service
 public class TaskServiceBizImpl implements TaskService {
@@ -20,20 +19,20 @@ public class TaskServiceBizImpl implements TaskService {
 	private TaskDao taskDao;
 	
 	@Override
-	public List<TaskVo> getAllTasks() {
-		List<TaskVo> allTasks = taskDao.getAllTasks();
+	public List<Task> getAllTasks() {
+		List<Task> allTasks = taskDao.getAllTasks();
 		return allTasks;
 	}
 	
 	@Override
-	public TaskVo getTaskById(Integer id) {
-		TaskVo task = taskDao.getTaskById(id);
+	public Task getTaskById(Integer id) {
+		Task task = taskDao.getTaskById(id);
 		return task;
 	}
 	
 	@Override
-	public List<TaskVo> getTaskByIds(List<Integer> ids) {
-		List<TaskVo> taskList = new ArrayList<TaskVo>();
+	public List<Task> getTaskByIds(List<Integer> ids) {
+		List<Task> taskList = new ArrayList<Task>();
 		if(ids != null) {
 			for(Integer id : ids) {
 				taskList.add(taskDao.getTaskById(id));
@@ -43,15 +42,19 @@ public class TaskServiceBizImpl implements TaskService {
 	}
 	
 	@Override
-	public List<TaskVo> getTodos() {
-		List<TaskVo> todos = new ArrayList<>();
+	public List<Task> getTodos() {
+		List<Task> todos = new ArrayList<>();
 		//获取所有任务，将符合条件的任务添加进todos
-		List<TaskVo> allTasks = taskDao.getAllTasks();
-		Date date =new Date();
-		for(TaskVo task : allTasks) {
+		List<Task> allTasks = taskDao.getAllTasks();
+//		获取当前时间
+		Date curtime =new Date();
+		for(Task task : allTasks) {
 			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
-				if(task.getBeginTimeActual() == null) {
-					if(task.getEndTimeExcepted().after(date)) {
+//				实际开始时间为空
+				if(task.getTimeActuals() == null) {
+					List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
+//					当前时间小于最大期望完成时间
+					if(curtime.before(this.getMaxEndTimeExpected(timeExpecteds))){
 						todos.add(task);
 					}
 				}
@@ -61,16 +64,21 @@ public class TaskServiceBizImpl implements TaskService {
 	}
 
 	@Override
-	public List<TaskVo> getPresentTasks() {
-		List<TaskVo> presentTasks = new ArrayList<>();
+	public List<Task> getPresentTasks() {
+		List<Task> presentTasks = new ArrayList<>();
 		//获取所有任务，将符合条件的任务添加进presentTasks
-		List<TaskVo> allTasks = taskDao.getAllTasks();
-		Date date = new Date();
-		for(TaskVo task : allTasks) {
+		List<Task> allTasks = taskDao.getAllTasks();
+		//获取当前系统时间
+		Date curtime = new Date();
+		for(Task task : allTasks) {
 			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
-				if(task.getBeginTimeActual() != null 
-						&& date.before(task.getEndTimeExcepted())) {
-					presentTasks.add(task);
+//				实际开始时间不为空
+				if(task.getTimeActuals() != null) {
+					List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
+//					当前时间<最大期望完成时间
+					if(curtime.before(this.getMaxEndTimeExpected(timeExpecteds))){
+						presentTasks.add(task);
+					}
 				}
 			}
 		}
@@ -79,11 +87,11 @@ public class TaskServiceBizImpl implements TaskService {
 	}
 
 	@Override
-	public List<TaskVo> getTasksByPriority(Enum priority) {
-		List<TaskVo> taskList = new ArrayList<>();
+	public List<Task> getTasksByPriority(Integer priority) {
+		List<Task> taskList = new ArrayList<>();
 		//获取所有任务，将符合条件的任务添加进taskList
-		List<TaskVo> allTasks = taskDao.getAllTasks();
-		for(TaskVo task : allTasks) {
+		List<Task> allTasks = taskDao.getAllTasks();
+		for(Task task : allTasks) {
 			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
 				if(priority.equals(task.getPriority())) {
 					taskList.add(task);
@@ -95,42 +103,40 @@ public class TaskServiceBizImpl implements TaskService {
 	}
 
 	@Override
-	public List<TaskVo> getOverdueTasks() {
-		List<TaskVo> overdueTasks = new ArrayList<>();
-		//获取所有任务，将符合条件的任务添加进overdueTasks
-		List<TaskVo> allTasks = taskDao.getAllTasks();
-		Date date = new Date();
-		for(TaskVo task : allTasks) {
+	public List<Task> getOverdueTasks() {
+		List<Task> overdueTasks = new ArrayList<>();
+//		获取所有任务，将符合条件的任务添加进overdueTasks
+		List<Task> allTasks = taskDao.getAllTasks();
+//		获取当前时间
+		Date curtime = new Date();
+		
+		for(Task task : allTasks) {
 			if(task.getIsDelete() != 1){
-				if(task.getBeginTimeActual() == null 
-						&& task.getEndTimeExcepted().before(date)) {
-					overdueTasks.add(task);
-				}else if (task.getBeginTimeActual() != null ){
-					if(task.getIsComplete() ==1 && task.getEndTimeActual().after(task.getEndTimeExcepted())){
-						overdueTasks.add(task);
-					}else if(task.getIsComplete() ==0 && date.after(task.getEndTimeExcepted())){
-						overdueTasks.add(task);
-					}
-					
-				}
+//				1.有实际完成时间
+//				实际完成时间不为空
+//						已完成
+//							最大实际完成时间>最大期望完成时间
+//						未完成
+//							当前系统时间>最大期望完成时间
+//				2.没有实际完成时间，根据当前判断
+//				1任务未完成
+//				2当前时间大于最大期望完成时间
 			}
 		}
 		
 		return overdueTasks;
 	}
 	
-	
-	
 
 
 	@Override
-	public void insertTask(TaskVo taskVo) {
-		taskDao.insertTask(taskVo);
+	public void insertTask(Task task) {
+		taskDao.insertTask(task);
 	}
 
 	@Override
-	public void updateTask(TaskVo taskVo) {
-		taskDao.updateTask(taskVo);
+	public void updateTask(Task task) {
+		taskDao.updateTask(task);
 	}
 
 	@Override
@@ -139,11 +145,11 @@ public class TaskServiceBizImpl implements TaskService {
 	}
 
 	@Override
-	public List<TaskVo> getCompletedTasks() {
-		List<TaskVo> completedTasks = new ArrayList<>();
+	public List<Task> getCompletedTasks() {
+		List<Task> completedTasks = new ArrayList<>();
 		
-		List<TaskVo> allTasks = taskDao.getAllTasks();
-		for(TaskVo task : allTasks) {
+		List<Task> allTasks = taskDao.getAllTasks();
+		for(Task task : allTasks) {
 			if(task.getIsComplete() == 1) {
 				completedTasks.add(task);
 			}
@@ -155,13 +161,37 @@ public class TaskServiceBizImpl implements TaskService {
 	@Override
 	public double getPercentOfCompletedTasks() {
 		Double percentOfCompletedTasks = new Double(0);
-		List<TaskVo> completedTasks=this.getCompletedTasks();
-		List<TaskVo> allTasks = taskDao.getAllTasks();
+		List<Task> completedTasks=this.getCompletedTasks();
+		List<Task> allTasks = taskDao.getAllTasks();
 		if(allTasks.size() !=0){
 			percentOfCompletedTasks = (double) (completedTasks.size()/allTasks.size());
 		}
 		
 		return percentOfCompletedTasks;
+	}
+	
+	
+	//获取最大预期时间
+	public Date getMaxEndTimeExpected(List<TimeExpected> timeExpecteds) {
+		
+		List<Date> endTimeExpecteds = new ArrayList<>();
+		for(TimeExpected timeExpected :timeExpecteds) {
+			endTimeExpecteds.add(timeExpected.getEndTimeExpected());
+		}
+		Collections.sort(endTimeExpecteds);
+		return endTimeExpecteds.get(endTimeExpecteds.size()-1);
+	}
+	
+	//获取最小预期时间
+	public Date getMinEndTimeExpected(List<TimeExpected> timeExpecteds) {
+		
+		List<Date> endTimeExpecteds = new ArrayList<>();
+		for(TimeExpected timeExpected :timeExpecteds) {
+			endTimeExpecteds.add(timeExpected.getEndTimeExpected());
+		}
+		
+		Collections.sort(endTimeExpecteds);
+		return endTimeExpecteds.get(0);
 	}
 	
 }

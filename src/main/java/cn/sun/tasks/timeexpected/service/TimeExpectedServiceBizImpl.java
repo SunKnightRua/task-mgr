@@ -25,11 +25,11 @@ public class TimeExpectedServiceBizImpl implements TimeExpectedService {
 		for(int i=0; i<timeExpecteds.size(); i++){
 			for(int j=i+1; j<timeExpecteds.size(); j++){
 				if(timeExpecteds.get(i).getBeginTimeExpected().after(timeExpecteds.get(j).getBeginTimeExpected()) 
-						&& timeExpecteds.get(i).getBeginTimeExpected().before(timeExpecteds.get(j).getEndTimeExcepted())) {
+						&& timeExpecteds.get(i).getBeginTimeExpected().before(timeExpecteds.get(j).getEndTimeExpected())) {
 					//条件成立则冲突，获取此任务添加至conflictingTasks中
 					conflictingTaskIds.add(timeExpecteds.get(i).getTaskId());
-				}else if(timeExpecteds.get(i).getEndTimeExcepted().after(timeExpecteds.get(j).getBeginTimeExpected())
-						 && timeExpecteds.get(i).getEndTimeExcepted().before(timeExpecteds.get(j).getEndTimeExcepted())) {
+				}else if(timeExpecteds.get(i).getEndTimeExpected().after(timeExpecteds.get(j).getBeginTimeExpected())
+						 && timeExpecteds.get(i).getEndTimeExpected().before(timeExpecteds.get(j).getEndTimeExpected())) {
 					//条件成立则冲突，获取此任务添加至conflictingTasks中
 					conflictingTaskIds.add(timeExpecteds.get(i).getTaskId());
 				}

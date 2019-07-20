@@ -1,6 +1,10 @@
 package cn.sun.tasks.task.domain;
 
 import java.util.Date;
+import java.util.List;
+
+import cn.sun.tasks.timeactual.domain.TimeActual;
+import cn.sun.tasks.timeexpected.domain.TimeExpected;
 
 public class Task {
 	
@@ -8,12 +12,14 @@ public class Task {
 	private String content;
 	private String desc;
 	private byte priority;
-	private byte isHabbit;
+	private byte isHabit;
 	private byte isComplete;
 	private Date createTime;
 	private Date updateTime;
 	private Date deleteTime;
 	private byte isDelete;
+	private List<TimeExpected> timeExpecteds;
+	private List<TimeActual> timeActuals;
 	public int getId() {
 		return id;
 	}
@@ -38,11 +44,11 @@ public class Task {
 	public void setPriority(byte priority) {
 		this.priority = priority;
 	}
-	public byte getIsHabbit() {
-		return isHabbit;
+	public byte getIsHabit() {
+		return isHabit;
 	}
-	public void setIsHabbit(byte isHabbit) {
-		this.isHabbit = isHabbit;
+	public void setIsHabit(byte isHabit) {
+		this.isHabit = isHabit;
 	}
 	public byte getIsComplete() {
 		return isComplete;
@@ -73,6 +79,18 @@ public class Task {
 	}
 	public void setIsDelete(byte isDelete) {
 		this.isDelete = isDelete;
+	}
+	public List<TimeExpected> getTimeExpecteds() {
+		return timeExpecteds;
+	}
+	public void setTimeExpecteds(List<TimeExpected> timeExpecteds) {
+		this.timeExpecteds = timeExpecteds;
+	}
+	public List<TimeActual> getTimeActuals() {
+		return timeActuals;
+	}
+	public void setTimeActuals(List<TimeActual> timeActuals) {
+		this.timeActuals = timeActuals;
 	}
 	
 	

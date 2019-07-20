@@ -7,7 +7,7 @@ public class TimeExpected {
 	private int id;
 	private int taskId;
 	private Date beginTimeExpected;
-	private Date endTimeExcepted;
+	private Date endTimeExpected;
 	public int getId() {
 		return id;
 	}
@@ -26,12 +26,11 @@ public class TimeExpected {
 	public void setBeginTimeExpected(Date beginTimeExpected) {
 		this.beginTimeExpected = beginTimeExpected;
 	}
-	public Date getEndTimeExcepted() {
-		return endTimeExcepted;
+	public Date getEndTimeExpected() {
+		return endTimeExpected;
 	}
-	public void setEndTimeExcepted(Date endTimeExcepted) {
-		this.endTimeExcepted = endTimeExcepted;
+	public void setEndTimeExpected(Date endTimeExpected) {
+		this.endTimeExpected = endTimeExpected;
 	}
-	
 	
 }

@@ -5,11 +5,11 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd     
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd     
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+        http://www.springframework.org/schema/context/spring-context.xsd">
  
 	<!-- 引入jdbc配置文件 -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -47,10 +47,10 @@
 	
 	<!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="cn.sun.dao" />
+		<property name="basePackage" value="cn.sun.tasks.*.dao" />
 	</bean>
  
 	<!-- 自动扫描注解的bean -->
-	<context:component-scan base-package="cn.sun.service" />
+	<context:component-scan base-package="cn.sun.tasks.task.service" />
  
 </beans>
