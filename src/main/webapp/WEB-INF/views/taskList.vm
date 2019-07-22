@@ -2,34 +2,34 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>show all tasks</title>
+<title>任务列表</title>
 </head>
 <body>
 <form action="" method="get">
 	<table border="1" width="80%" align="center">
 		<thead>
 			<tr>
-				<th colspan="12" align="center">任务列表</th>
+				<th colspan="13" align="center">任务列表</th>
 			</tr>
 		</thead>
 		<tr>
-			<td align="center">全选</td>
-			<td align="center">任务id</td>
-			<td align="center">任务</td>
-			<td align="center">任务描述</td>
-			<td align="center">优先级</td>
-			<td align="center">日常任务</td>
-			<td align="center">预期开始时间</td>
-			<td align="center">预期结束时间</td>
-			<td align="center">实际开始时间</td>
-			<td align="center">实际结束时间</td>
-			<td align="center">创建时间</td>
-			<td align="center">更新时间</td>
-			<td align="center">已完成</td>
+			<td align="center" width="2.5%">全选</td>
+			<td align="center" width="3.5%">任务id</td>
+			<td align="center" width="7%">任务</td>
+			<td align="center" width="*%">任务描述</td>
+			<td align="center" width="6%">优先级</td>
+			<td align="center" width="4%">日常任务</td>
+			<td align="center" width="10%">预期开始时间</td>
+			<td align="center" width="10%">预期结束时间</td>
+			<td align="center" width="10%">实际开始时间</td>
+			<td align="center" width="10%">实际结束时间</td>
+			<td align="center" width="10%">创建时间</td>
+			<td align="center" width="10%">更新时间</td>
+			<td align="center" width="4%">已完成</td>
 		</tr>
 		#foreach($!task in $!tasks)
 		<tr>
-			<td align="center"><input type="checkbox"/></td>
+			<td align="center"><input type="checkbox"  name="ids"/></td>
 			<td align="center">$!task.id</td>
 			<td align="center">$!task.content</td>
 			<td align="center">$!task.desc</td>
@@ -37,13 +37,13 @@
 			##优先级
 			<td align="center">
 			#if ($!task.priority == 1)
-			紧急重要
+			紧急<br/>重要
 			#elseif ($!task.priority == 2)
-			紧急不重要 
+			紧急<br/>不重要 
 			#elseif ($!task.priority == 3)
-			不紧急重要
+			不紧<br/>急重要
 			#elseif ($!task.priority == 4)
-			不紧急不重要
+			不紧急<br/>不重要
 			#end
 			</td> 
 			
@@ -57,26 +57,26 @@
 			</td>
 			
 			##预期开始时间
-			<td>
+			<td align="center">
 			#foreach($!timeExpected in $!task.timeExpecteds)
 				$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeExpected.beginTimeExpected)</br>
 			#end
 			</td>
 			##预期结束时间
-			<td>
+			<td align="center">
 			#foreach($!timeExpected in $!task.timeExpecteds)
 			$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeExpected.endTimeExpected)</br>
 			#end
 			</td> 
 			
 			##实际开始时间
-			<td>
+			<td align="center">
 			#foreach($!timeActual in $!task.timeActuals)
 			$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeActual.beginTimeActual)</br>
 			#end
 			</td>
 			##实际结束时间
-			<td>
+			<td align="center" name="endTimeActual">
 			#foreach($!timeActual in $!task.timeActuals)
 			$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!timeActual.endTimeActual)</br>
 			#end

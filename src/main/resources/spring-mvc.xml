@@ -30,8 +30,8 @@
 	<bean id="velocityViewResolver"
 
 		class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+<!-- 	<property name="suffix" value=".vm" /> -->
 		<property name="suffix" value="" />
-<!-- 		<property name="suffix" value=".vm" /> -->
 		<property name="contentType">
 			<value>text/html;charset=UTF-8</value>
 		</property>

@@ -13,5 +13,5 @@ public interface TimeExpectedDao {
 	
 	public void insertTimeExpected(TimeExpected timeExpected);
 	public void updatetTimeExpected(TimeExpected timeExpected);
-	public void deleteTimeExpectedById(Integer Id);
+	public void deleteTimeExpectedByTaskId(Integer taskId);
 }

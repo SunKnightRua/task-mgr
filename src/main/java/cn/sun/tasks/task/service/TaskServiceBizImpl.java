@@ -1,60 +1,68 @@
 package cn.sun.tasks.task.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.sun.tasks.task.dao.TaskDao;
 import cn.sun.tasks.task.domain.Task;
+import cn.sun.tasks.timeactual.domain.TimeActual;
 import cn.sun.tasks.timeexpected.domain.TimeExpected;
+import cn.sun.tasks.utils.MyTimeUtils;
 
 @Service
 public class TaskServiceBizImpl implements TaskService {
 
-	@Autowired 
+	@Autowired
 	private TaskDao taskDao;
-	
+
+	// 获取所有任务
 	@Override
 	public List<Task> getAllTasks() {
 		List<Task> allTasks = taskDao.getAllTasks();
 		return allTasks;
 	}
-	
+
+	// 根据id查询任务
 	@Override
 	public Task getTaskById(Integer id) {
 		Task task = taskDao.getTaskById(id);
 		return task;
 	}
-	
+
 	@Override
 	public List<Task> getTaskByIds(List<Integer> ids) {
 		List<Task> taskList = new ArrayList<Task>();
-		if(ids != null) {
-			for(Integer id : ids) {
+		if (ids != null) {
+			for (Integer id : ids) {
 				taskList.add(taskDao.getTaskById(id));
 			}
 		}
 		return taskList;
 	}
-	
+
+	// 待办任务
 	@Override
 	public List<Task> getTodos() {
 		List<Task> todos = new ArrayList<>();
-		//获取所有任务，将符合条件的任务添加进todos
+		// 获取所有任务，将符合条件的任务添加进todos
 		List<Task> allTasks = taskDao.getAllTasks();
-//		获取当前时间
-		Date curtime =new Date();
-		for(Task task : allTasks) {
-			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
-//				实际开始时间为空
-				if(task.getTimeActuals() == null) {
+		// 获取当前时间
+		Date curtime = new Date();
+		for (Task task : allTasks) {
+			if (task.getIsDelete() != 1 && task.getIsComplete() != 1) {
+				// 实际开始时间为空
+				if (task.getTimeActuals().size() == 0) {
 					List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
-//					当前时间小于最大期望完成时间
-					if(curtime.before(this.getMaxEndTimeExpected(timeExpecteds))){
+					// 当前时间小于最大期望完成时间
+					if (MyTimeUtils.getMinEndTimeExpected(timeExpecteds) != null
+							&& curtime.before(MyTimeUtils.getMinBeginTimeExpected(timeExpecteds))) {
 						todos.add(task);
 					}
 				}
@@ -63,135 +71,140 @@ public class TaskServiceBizImpl implements TaskService {
 		return todos;
 	}
 
+	// 当前任务
 	@Override
 	public List<Task> getPresentTasks() {
 		List<Task> presentTasks = new ArrayList<>();
-		//获取所有任务，将符合条件的任务添加进presentTasks
+		// 获取所有任务，将符合条件的任务添加进presentTasks
 		List<Task> allTasks = taskDao.getAllTasks();
-		//获取当前系统时间
+		// 获取当前系统时间
 		Date curtime = new Date();
-		for(Task task : allTasks) {
-			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
-//				实际开始时间不为空
-				if(task.getTimeActuals() != null) {
+		for (Task task : allTasks) {
+			if (task.getIsDelete() != 1 && task.getIsComplete() != 1) {
+				// 实际开始时间不为空
+				if (task.getTimeActuals().size() != 0) {
 					List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
-//					当前时间<最大期望完成时间
-					if(curtime.before(this.getMaxEndTimeExpected(timeExpecteds))){
+					// 当前时间<最大期望完成时间
+					if (MyTimeUtils.getMaxEndTimeExpected(timeExpecteds) != null
+							&& curtime.before(MyTimeUtils.getMaxEndTimeExpected(timeExpecteds))) {
 						presentTasks.add(task);
 					}
 				}
 			}
 		}
-		
+
 		return presentTasks;
 	}
 
+	// 根据优先级查询任务
 	@Override
 	public List<Task> getTasksByPriority(Integer priority) {
 		List<Task> taskList = new ArrayList<>();
-		//获取所有任务，将符合条件的任务添加进taskList
+		// 获取所有任务，将符合条件的任务添加进taskList
 		List<Task> allTasks = taskDao.getAllTasks();
-		for(Task task : allTasks) {
-			if(task.getIsDelete() != 1 && task.getIsComplete() !=1){
-				if(priority.equals(task.getPriority())) {
-					taskList.add(task);
-				}
+		for (Task task : allTasks) {
+			if (task.getIsDelete() != 1 && task.getIsComplete() != 1 && priority == task.getPriority()) {
+				taskList.add(task);
 			}
 		}
-		
+
 		return taskList;
 	}
 
+	// 逾期任务
 	@Override
 	public List<Task> getOverdueTasks() {
 		List<Task> overdueTasks = new ArrayList<>();
-//		获取所有任务，将符合条件的任务添加进overdueTasks
+		// 获取所有任务，将符合条件的任务添加进overdueTasks
 		List<Task> allTasks = taskDao.getAllTasks();
-//		获取当前时间
+		// 获取当前时间
 		Date curtime = new Date();
-		
-		for(Task task : allTasks) {
-			if(task.getIsDelete() != 1){
-//				1.有实际完成时间
-//				实际完成时间不为空
-//						已完成
-//							最大实际完成时间>最大期望完成时间
-//						未完成
-//							当前系统时间>最大期望完成时间
-//				2.没有实际完成时间，根据当前判断
-//				1任务未完成
-//				2当前时间大于最大期望完成时间
+		for (Task task : allTasks) {
+			if (task.getIsDelete() != 1) {
+				if (task.getIsComplete() == 1) {
+					// 1.已完成
+					// 最大实际完成时间>最大期望完成时间
+					Date maxEndTimeActual = MyTimeUtils.getMaxEndTimeActual(task.getTimeActuals());
+					if (maxEndTimeActual != null
+							&& maxEndTimeActual.after(MyTimeUtils.getMaxEndTimeExpected(task.getTimeExpecteds()))) {
+						overdueTasks.add(task);
+					}
+				} else {
+					// 2.未完成
+					// 当前系统时间>最大期望完成时间
+					if(curtime.after(MyTimeUtils.getMaxEndTimeExpected(task.getTimeExpecteds()))) {
+						overdueTasks.add(task);
+					}
+				}
 			}
 		}
-		
+
 		return overdueTasks;
 	}
-	
 
-
+	// 新增任务
 	@Override
 	public void insertTask(Task task) {
+
 		taskDao.insertTask(task);
+
+		//
+		//
+		//
+		//
+		//
 	}
 
+	// 更新任务
 	@Override
 	public void updateTask(Task task) {
+		// 获取接受参数的id
+		Integer id = task.getId();
+		// 获取timeExpecteds和timeActuals
+		List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
+		List<TimeActual> timeActuals = task.getTimeActuals();
+		// 循环调用IimeExpected和TimeActual的update方法
 		taskDao.updateTask(task);
+		//
+		//
+		//
+		//
+		//
 	}
 
+	// 删除任务
 	@Override
 	public void deleteTask(Integer id) {
 		taskDao.deleteTask(id);
 	}
 
+	// 查询已完成任务
 	@Override
 	public List<Task> getCompletedTasks() {
 		List<Task> completedTasks = new ArrayList<>();
-		
 		List<Task> allTasks = taskDao.getAllTasks();
-		for(Task task : allTasks) {
-			if(task.getIsComplete() == 1) {
+		for (Task task : allTasks) {
+			if (task.getIsComplete() == 1 && task.getIsDelete() != 1) {
 				completedTasks.add(task);
 			}
 		}
-		
 		return completedTasks;
 	}
 
 	@Override
 	public double getPercentOfCompletedTasks() {
 		Double percentOfCompletedTasks = new Double(0);
-		List<Task> completedTasks=this.getCompletedTasks();
+		// 还需要排除其中被删除的
+		List<Task> completedTasks = this.getCompletedTasks();
+		// 还需要排除其中被删除的
 		List<Task> allTasks = taskDao.getAllTasks();
-		if(allTasks.size() !=0){
-			percentOfCompletedTasks = (double) (completedTasks.size()/allTasks.size());
+		//
+		//
+		//
+		if (allTasks.size() != 0) {
+			percentOfCompletedTasks = (double) (completedTasks.size() / allTasks.size());
 		}
-		
+
 		return percentOfCompletedTasks;
 	}
-	
-	
-	//获取最大预期时间
-	public Date getMaxEndTimeExpected(List<TimeExpected> timeExpecteds) {
-		
-		List<Date> endTimeExpecteds = new ArrayList<>();
-		for(TimeExpected timeExpected :timeExpecteds) {
-			endTimeExpecteds.add(timeExpected.getEndTimeExpected());
-		}
-		Collections.sort(endTimeExpecteds);
-		return endTimeExpecteds.get(endTimeExpecteds.size()-1);
-	}
-	
-	//获取最小预期时间
-	public Date getMinEndTimeExpected(List<TimeExpected> timeExpecteds) {
-		
-		List<Date> endTimeExpecteds = new ArrayList<>();
-		for(TimeExpected timeExpected :timeExpecteds) {
-			endTimeExpecteds.add(timeExpected.getEndTimeExpected());
-		}
-		
-		Collections.sort(endTimeExpecteds);
-		return endTimeExpecteds.get(0);
-	}
-	
 }

@@ -28,5 +28,5 @@ public interface TimeExpectedService {
 	 * 根据id删除期望时间
 	 * @param Id 
 	 */
-	public void deleteTimeExpectedById(Integer Id);
+	public void deleteTimeExpectedById(Integer id);
 }

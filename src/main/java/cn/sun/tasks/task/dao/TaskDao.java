@@ -13,8 +13,7 @@ public interface TaskDao {
 	public List<Task> getAllTasks();
 	public Task getTaskById(Integer id);
 	
-	
-	public void insertTask(Task task);
+	public Integer insertTask(Task task);
 	public void updateTask(Task task);
 	public void deleteTask(Integer id);
 }

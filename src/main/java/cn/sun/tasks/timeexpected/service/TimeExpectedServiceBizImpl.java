@@ -50,8 +50,8 @@ public class TimeExpectedServiceBizImpl implements TimeExpectedService {
 	}
 
 	@Override
-	public void deleteTimeExpectedById(Integer Id) {
-		timeExpectedDao.deleteTimeExpectedById(Id);
+	public void deleteTimeExpectedById(Integer id) {
+		timeExpectedDao.deleteTimeExpectedByTaskId(id);
 	}
 	
 	
