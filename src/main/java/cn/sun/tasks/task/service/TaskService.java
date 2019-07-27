@@ -31,7 +31,7 @@ public interface TaskService {
 	 * 插入一条任务
 	 * @param task 任务信息
 	 */
-	public void insertTask(Task task);
+	public void addTask(Task task);
 	
 	/**
 	 * 更新一条任务

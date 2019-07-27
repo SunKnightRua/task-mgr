@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <title>添加任务</title>
 </head>
+
 <body>
-<form action="#" method="get">
+<form action="/task-mgr/task/addTask" method="post">
 	<table border="1" width="80%" align="center">
 		<thead>
 			<tr>
-				<th colspan="10" align="center">任务列表</th>
+				<th colspan="9" align="center">任务列表</th>
 			</tr>
 		</thead>
 		<tr>
-			<td align="center" width="3.5%">任务id</td>
 			<td align="center" width="7%">任务</td>
 			<td align="center" width="*%">任务描述</td>
 			<td align="center" width="6%">优先级</td>
@@ -25,10 +25,6 @@
 			<td align="center" width="4%">已完成</td>
 		</tr>
 		<tr>
-			<td align="center">
-			<input type="text"  name="id"/>
-			</td>
-			
 			<td align="center">
 			<input type="text" name="content"/>
 			</td>
@@ -80,6 +76,9 @@
 			<option value="1">是</option>
 			</select>
 			</td>
+		</tr>
+		<tr>
+		<input type="submit">
 		</tr>
 	</table>
 </form>

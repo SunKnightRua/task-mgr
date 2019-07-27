@@ -6,10 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
-<script type="text/javascript">
-	window.location.href = "/task-mgr/task/getAllTasks";
-</script>
+	<script type="text/javascript">
+	//	window.location.href = "/task-mgr/task/getAllTasks";
+	</script>
 <body>
+<input type="button" value=新增  src="/task-mgr/task/addTask.vm">
 
 </body>
 </html>

@@ -1,16 +1,28 @@
 package cn.sun.tasks.task.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.sun.tasks.task.domain.Task;
 import cn.sun.tasks.task.service.TaskService;
+import cn.sun.tasks.timeactual.domain.TimeActual;
+import cn.sun.tasks.timeexpected.domain.TimeExpected;
 
+/**
+ * TaskController
+ * @author Sun
+ *
+ */
 @Controller
 @RequestMapping("/task")
 public class TaskController {
@@ -18,7 +30,11 @@ public class TaskController {
 	@Autowired
 	private TaskService taskService;
 
-	// 获取所有未完成未删除任务
+	/**
+	 * 获取所有未完成未删除任务
+	 * @param model
+	 * @return 获取所有任务
+	 */
 	@RequestMapping("/getAllTasks")
 	public String getAllTasks(Model model) {
 		List<Task> allTasks = taskService.getAllTasks();
@@ -32,7 +48,12 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	// 根据id查询任务
+	/**
+	 *  根据id查询任务
+	 * @param model 
+	 * @param id 任务id
+	 * @return 对应的任务
+	 */
 	@RequestMapping("/getTaskById")
 	public String getTaskById(Model model, Integer id) {
 		List<Task> tasks = new ArrayList<Task>();
@@ -49,34 +70,67 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	// 新增任务
-	@RequestMapping("/addTask")
-	public String insertTask(Task task) {
+	/**
+	 * 新增任务
+	 * @return 新增任务页面
+	 */
+	
+	@RequestMapping(value = "/addTask", method = RequestMethod.GET)
+	public String addTask() {
 		return "addTask.vm";
 	}
 
-	@RequestMapping("/saveInsert")
-	public String saveInsert(Task task) {
-		taskService.insertTask(task);
-		return "redirect:getAllTasks";
+	@RequestMapping(value = "/addTask", method = RequestMethod.POST)
+	public String addTask(@RequestParam(value = "content", required = true) String content,
+			@RequestParam(value = "desc") String desc, @RequestParam(value = "priority") byte priority,
+			@RequestParam(value = "isHabit") byte isHabit,
+			@RequestParam(value = "beginTimeExpected") Date beginTimeExpected,
+			@RequestParam(value = "endTimeExpected") Date endTimeExpected,
+			@RequestParam(value = "beginTimeActual") Date beginTimeActual,
+			@RequestParam(value = "endTimeActual") Date endTimeActual,
+			@RequestParam(value = "isComplete") byte isComplete) {
+		List<TimeExpected> timeExpecteds = new ArrayList<TimeExpected>();
+		List<TimeActual> timeActuals = new ArrayList<TimeActual>();
+		Task task = new Task();
+		task.setContent(content);
+		task.setDesc(desc);
+		task.setPriority(priority);
+		task.setIsHabit(isHabit);
+		task.setTimeExpecteds(timeExpecteds);
+		task.setTimeActuals(timeActuals);
+		task.setIsComplete(isComplete);
+		taskService.addTask(task);
+		return "redirect:taskList.vm";
 	}
 
 	// 待修改
-	// 更新任务
+	/**
+	 *  更新任务
+	 * @param task
+	 * @return
+	 */
 	@RequestMapping("/updateTask")
 	public String updateTask(Task task) {
 		taskService.updateTask(task);
 		return "redirect:getAllTasks";
 	}
 
-	// 删除任务
+	/**
+	 *  删除任务
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping("/deleteTask")
 	public String deleteTask(Integer id) {
 		taskService.deleteTask(id);
 		return "redirect:getAllTasks";
 	}
 
-	// 查询已完成任务
+	/**
+	 *  查询已完成任务
+	 * @param model
+	 * @return 已完成任务
+	 */
 	@RequestMapping("/getCompletedTasks")
 	public String getCompletedTasks(Model model) {
 		List<Task> tasks = taskService.getCompletedTasks();
@@ -84,7 +138,11 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	// 逾期任务
+	/**
+	 *  逾期任务
+	 * @param model
+	 * @return 逾期任务
+	 */
 	@RequestMapping("/getOverdueTasks")
 	public String getOverdueTasks(Model model) {
 		List<Task> tasks = taskService.getOverdueTasks();
@@ -92,7 +150,11 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	// 待办任务
+	/**
+	 *  待办任务
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/getTodos")
 	public String getTodos(Model model) {
 		List<Task> tasks = taskService.getTodos();
@@ -100,7 +162,11 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	// 当前任务
+	/**
+	 *  当前任务
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/getPresentTasks")
 	public String getPresentTasks(Model model) {
 		List<Task> tasks = taskService.getPresentTasks();
@@ -115,10 +181,12 @@ public class TaskController {
 		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
-	
 
-	//可以不用单独的方法，直接在页面上获取总任务数和已完成任务数，计算结果
-	@RequestMapping("getPercentOfCompletedTasks")
+	/**
+	 * 任务完成度
+	 * @return
+	 */
+	@RequestMapping("/getPercentOfCompletedTasks")
 	public Double getPercentOfCompletedTasks() {
 		return taskService.getPercentOfCompletedTasks();
 	}

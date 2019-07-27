@@ -1,6 +1,5 @@
 package cn.sun.tasks.task.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import cn.sun.tasks.task.dao.TaskDao;
 import cn.sun.tasks.task.domain.Task;
+import cn.sun.tasks.timeactual.dao.TimeActualDao;
 import cn.sun.tasks.timeactual.domain.TimeActual;
+import cn.sun.tasks.timeexpected.dao.TimeExpectedDao;
 import cn.sun.tasks.timeexpected.domain.TimeExpected;
 import cn.sun.tasks.utils.MyTimeUtils;
 
@@ -21,6 +22,10 @@ public class TaskServiceBizImpl implements TaskService {
 
 	@Autowired
 	private TaskDao taskDao;
+	@Autowired
+	private TimeActualDao timeActualDao;
+	@Autowired
+	private TimeExpectedDao timeExpectedDao;
 
 	// 获取所有任务
 	@Override
@@ -144,32 +149,36 @@ public class TaskServiceBizImpl implements TaskService {
 
 	// 新增任务
 	@Override
-	public void insertTask(Task task) {
-
-		taskDao.insertTask(task);
-
-		//
-		//
-		//
-		//
-		//
+	public void addTask(Task task) {
+		int taskId= taskDao.insertTask(task);
+		List<TimeExpected> timeExpectedList= task.getTimeExpecteds();
+		for(TimeExpected timeExpected:timeExpectedList) {
+			timeExpected.setTaskId(taskId);
+			timeExpectedDao.addTimeExpected(timeExpected);
+		}
+		List<TimeActual> timeActualList= task.getTimeActuals();
+		for(TimeActual timeActual:timeActualList) {
+			timeActual.setTaskId(taskId);
+			timeActualDao.addTimeActual(timeActual);
+		}
+		
 	}
 
 	// 更新任务
 	@Override
 	public void updateTask(Task task) {
-		// 获取接受参数的id
-		Integer id = task.getId();
 		// 获取timeExpecteds和timeActuals
 		List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
 		List<TimeActual> timeActuals = task.getTimeActuals();
 		// 循环调用IimeExpected和TimeActual的update方法
 		taskDao.updateTask(task);
-		//
-		//
-		//
-		//
-		//
+		for(TimeExpected timeExpected:timeExpecteds) {
+			timeExpectedDao.updateTimeExpected(timeExpected);
+		}
+		for(TimeActual timeActual:timeActuals) {
+			timeActualDao.updateTimeActual(timeActual);
+			
+		}
 	}
 
 	// 删除任务
@@ -198,8 +207,6 @@ public class TaskServiceBizImpl implements TaskService {
 		List<Task> completedTasks = this.getCompletedTasks();
 		// 还需要排除其中被删除的
 		List<Task> allTasks = taskDao.getAllTasks();
-		//
-		//
 		//
 		if (allTasks.size() != 0) {
 			percentOfCompletedTasks = (double) (completedTasks.size() / allTasks.size());

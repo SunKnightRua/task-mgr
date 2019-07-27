@@ -22,12 +22,12 @@ public class TimeActualServiceBizImpl implements TimeActualService {
 
 	@Override
 	public void insertTimeActual(TimeActual timeActual) {
-		timeActualDao.insertTimeActual(timeActual);
+		timeActualDao.addTimeActual(timeActual);
 	}
 
 	@Override
 	public void updatetTimeActual(TimeActual timeActual) {
-		timeActualDao.updatetTimeActual(timeActual);
+		timeActualDao.updateTimeActual(timeActual);
 	}
 
 	@Override

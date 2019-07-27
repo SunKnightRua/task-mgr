@@ -41,12 +41,12 @@ public class TimeExpectedServiceBizImpl implements TimeExpectedService {
 
 	@Override
 	public void insertTimeExpected(TimeExpected timeExpected) {
-		timeExpectedDao.insertTimeExpected(timeExpected);
+		timeExpectedDao.addTimeExpected(timeExpected);
 	}
 
 	@Override
 	public void updatetTimeExpected(TimeExpected timeExpected) {
-		timeExpectedDao.updatetTimeExpected(timeExpected);
+		timeExpectedDao.updateTimeExpected(timeExpected);
 	}
 
 	@Override
