@@ -42,9 +42,9 @@
 			</tr>
 		</thead>
 		<tr>
-			<td align="center" width="2.5%">全选</td>
+			<td align='center' width='2.5%'>全选</td>
 			<td align="center" width="10%">任务</td>
-			<td align="center" width="*%">任务描述</td>
+			<td align='center' width='*%'>任务描述</td>
 			<td align="center" width="6%">优先级</td>
 			<td align="center" width="4%">日常任务</td>
 			<td align="center" width="10%">预期时间</td>
@@ -114,6 +114,15 @@
 			<td id="yyy"></td>
 		</tr>
 		#end
+		<tr align="center" width="60">
+		#if(curPage<=5)
+		<td><a href="${pageContext.request.contextPath}/"></a></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		</tr>
 	</table>
 </form>
 </body>

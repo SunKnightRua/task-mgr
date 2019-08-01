@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import cn.sun.tasks.task.domain.Task;
 import cn.sun.tasks.task.service.TaskService;
 import cn.sun.tasks.timeactual.domain.TimeActual;
 import cn.sun.tasks.timeexpected.domain.TimeExpected;
+import cn.sun.tasks.utils.PageUtils;
 
 /**
  * TaskController
@@ -44,6 +46,7 @@ public class TaskController {
 				tasks.add(task);
 			}
 		}
+		tasks=PageUtils.showPages(tasks, 10, 1);
 		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
@@ -80,17 +83,29 @@ public class TaskController {
 		return "addTask.vm";
 	}
 
+	
 	@RequestMapping(value = "/addTask", method = RequestMethod.POST)
-	public String addTask(@RequestParam(value = "content", required = true) String content,
-			@RequestParam(value = "desc") String desc, @RequestParam(value = "priority") byte priority,
+	public String addTask(
+			@RequestParam(value = "content", required = true) String content,
+			@RequestParam(value = "desc") String desc, 
+			@RequestParam(value = "priority") byte priority,
 			@RequestParam(value = "isHabit") byte isHabit,
-			@RequestParam(value = "beginTimeExpected") Date beginTimeExpected,
-			@RequestParam(value = "endTimeExpected") Date endTimeExpected,
-			@RequestParam(value = "beginTimeActual") Date beginTimeActual,
-			@RequestParam(value = "endTimeActual") Date endTimeActual,
+			@RequestParam(value = "beginTimeExpected") @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date beginTimeExpected,
+			@RequestParam(value = "endTimeExpected") @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date endTimeExpected,
+			@RequestParam(value = "beginTimeActual") @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date beginTimeActual,
+			@RequestParam(value = "endTimeActual") @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date endTimeActual,
 			@RequestParam(value = "isComplete") byte isComplete) {
 		List<TimeExpected> timeExpecteds = new ArrayList<TimeExpected>();
 		List<TimeActual> timeActuals = new ArrayList<TimeActual>();
+		TimeExpected timeExpected = new TimeExpected();
+		timeExpected.setBeginTimeExpected(beginTimeExpected);
+		timeExpected.setEndTimeExpected(endTimeExpected);
+		timeExpecteds.add(timeExpected);
+		TimeActual timeActual =new TimeActual();
+		timeActual.setBeginTimeActual(beginTimeActual);
+		timeActual.setEndTimeActual(endTimeActual);
+		timeActuals.add(timeActual);
+		
 		Task task = new Task();
 		task.setContent(content);
 		task.setDesc(desc);

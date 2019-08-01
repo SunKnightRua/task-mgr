@@ -7,10 +7,9 @@
 <title>Insert title here</title>
 </head>
 	<script type="text/javascript">
-	//	window.location.href = "/task-mgr/task/getAllTasks";
+		window.location.href = "/task-mgr/task/getAllTasks";
 	</script>
 <body>
-<input type="button" value=新增  src="/task-mgr/task/addTask.vm">
 
 </body>
 </html>
