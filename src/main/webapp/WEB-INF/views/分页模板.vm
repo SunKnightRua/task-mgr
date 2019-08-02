@@ -1,0 +1,67 @@
+##业务代码
+<form action="/index/searchGift.htm" method="post">    
+             搜索条件:<input type="text" name="str" value="$str" >  
+             <input type="submit" value="搜索">
+    </form>  
+    
+    #foreach($info in $list)
+       giftName:[$info.giftName]   giftPrice:[$info.giftPrice]   oneType:[$info.oneType]  twoType:[$info.twoType] <br>
+    #end
+    
+
+##分页代码
+#set($page_size = 10)//一页大小
+#set($page2 = $total/10)
+#set($page1 = $total/10+1)
+#if($total/10 ==0)//设置总页数
+#if($total<10)
+#set($page_count = $page2+1)
+#else
+#set($page_count = $page2)
+#end 
+#else 
+#set($page_count = $page1)  
+#end
+#set($p_page = $index)//当前页
+#set($pre1_page = $p_page - 1)
+#set($pre2_page = $p_page - 2)
+#set($next1_page = $p_page + 1)
+#set($next2_page = $p_page + 2)
+<h2>#if($page_count > 1)
+             #if($p_page>1)
+              <a href="/index/searchGift.htm?pageindex=1&str=$str" >首页</a>
+                 <a href="/index/searchGift.htm?pageindex=$pre1_page&str=$str">上页</a>
+             #end
+             #if($pre2_page >=1)
+             <a href="/index/searchGift.htm?pageindex=$pre2_page&str=$str">$pre2_page</a>
+             #end
+             #if($pre1_page >=1)
+             <a href="/index/searchGift.htm?pageindex=$pre1_page&str=$str">$pre1_page</a>
+             #end
+             <a href="/index/searchGift.htm?pageindex=$p_page&str=$str">$p_page</a>
+             #if($next1_page <=$page_count)
+             <a href="/index/searchGift.htm?pageindex=$next1_page&str=$str">$next1_page</a>
+             #end
+             #if($next2_page <=$page_count)
+             <a href="/index/searchGift.htm?pageindex=$next2_page&str=$str">$next2_page</a>
+             #end
+             #if($p_page < $page_count)
+              <a href="/index/searchGift.htm?pageindex=$next1_page&str=$str">下页</a>
+              <a href="/index/searchGift.htm?pageindex=$page_count&str=$str">尾页</a>
+             #end
+        #end 
+             #if($page_count>0)
+                 当前第$p_page页,共$page_count页 <input type="text" id= "index" style="width:30px"><a href="#" onClick="jump()">跳转</a>
+             #else
+                 没有找到东西
+             #end
+        </h2>
+        
+<script>
+    function jump(){
+      var page = document.getElementById("index").value;
+      if(page&&page>0&&page<=$page_count){//有输入值，并且输入值在1到总页数之间才跳转。
+          window.location.href="/index/searchGift.htm?pageindex="+page+"&str=$str";
+      }
+   }
+</script>

@@ -1,10 +1,11 @@
 package cn.sun.tasks.task.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -200,9 +201,11 @@ public class TaskController {
 	/**
 	 * 任务完成度
 	 * @return
+	 * @throws IOException 
 	 */
-	@RequestMapping("/getPercentOfCompletedTasks")
-	public Double getPercentOfCompletedTasks() {
-		return taskService.getPercentOfCompletedTasks();
+	@RequestMapping(value="/getPercentOfCompletedTasks", method=RequestMethod.POST)
+	public void getPercentOfCompletedTasks(HttpServletResponse response) throws IOException {
+		String jsonStr ="" + taskService.getPercentOfCompletedTasks();
+		response.getWriter().write(jsonStr);;
 	}
 }

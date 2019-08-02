@@ -8,7 +8,6 @@
 	<mvc:annotation-driven />
 
 	<!-- 扫描controller（controller层注入） -->
-
 	<context:component-scan base-package="cn.sun.tasks.*.controller" />
 
 	<!-- 配置视图解析器,跳转的文件的前后缀 -->

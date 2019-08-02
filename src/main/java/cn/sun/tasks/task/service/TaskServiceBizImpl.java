@@ -207,9 +207,8 @@ public class TaskServiceBizImpl implements TaskService {
 		List<Task> allTasks = taskDao.getAllTasks();
 		//
 		if (allTasks.size() != 0) {
-			percentOfCompletedTasks = (double) (completedTasks.size() / allTasks.size());
+			percentOfCompletedTasks = completedTasks.size()*1.0 / allTasks.size()*100;
 		}
-
 		return percentOfCompletedTasks;
 	}
 }

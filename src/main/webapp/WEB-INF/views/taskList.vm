@@ -4,26 +4,21 @@
 <meta charset="UTF-8">
 <title>任务列表</title>
 </head>
-<script src="/js/jquery-1.11.0.min.js"></script>
+<script src="/task-mgr/js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
 		$(function(){
-			alert(result);
-	        //请求参数
-	        var list = {};
 	        $.ajax({
 	            //请求方式
 	            type : "POST",
 	            //请求的媒体类型
-	            contentType: "application/json;charset=UTF-8",
-	            //请求地址
-	            url : "localhost:8080/task-mgr/task/getPercentOfCompletedTasks",
-	            //数据，json字符串
-	            data : JSON.stringify(list),
+	            dataType:"text",
+	            //请求地址${pageContext.request.contextPath}
+	            url : "/task-mgr/task/getPercentOfCompletedTasks",
+	            
 	            //请求成功
-	            success : function(result) {
-	            	alert(result);
-	            	$('#yyy').html(result);
-	                console.log(result);
+	            success : function(data) {
+	            	console.log(data); 
+	            	$('#percentOfCompletedTasks').html("完成度:"+data+"%");
 	            },
 	            //请求失败，包含具体的错误信息
 	            error : function(e){
@@ -38,7 +33,14 @@
 	<table border="1" width="80%" align="center">
 		<thead>
 			<tr>
-				<th colspan="11" align="center">任务列表</th>
+				<th colspan="10" align="center">
+				任务列表
+				</th>
+			</tr>
+			<tr>
+				<td colspan="10" align="center">
+				<span id="percentOfCompletedTasks" align="left">111</span>
+				</td>
 			</tr>
 		</thead>
 		<tr>
@@ -51,8 +53,7 @@
 			<td align="center" width="10%">实际时间</td>
 			<td align="center" width="10%">创建时间</td>
 			<td align="center" width="10%">更新时间</td>
-			<td align="center" width="4%">已完成</td>
-			<td align="center" width="8%">完成度</td>
+			<td align="center" width="5%">已完成</td>
 		</tr>
 		#foreach($!task in $!tasks)
 		<tr>
@@ -111,18 +112,8 @@
 			是
 			#end
 			</td>
-			<td id="yyy"></td>
 		</tr>
 		#end
-		<tr align="center" width="60">
-		#if(curPage<=5)
-		<td><a href="${pageContext.request.contextPath}/"></a></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		</tr>
 	</table>
 </form>
 </body>
