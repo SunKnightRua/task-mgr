@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sun.tasks.timeactual.dao.TimeActualDao">
+	<resultMap type="cn.sun.tasks.timeactual.domain.TimeActual" id="timeActualMap">
+		<id property="id" column="id" />
+		<result property="taskId" column="task_id" />
+		<result property="beginTimeActual" column="begin_time_actual" />
+		<result property="endTimeActual" column="end_time_actual" />
+	</resultMap>
+
+<!-- 查询所有预期时间 -->
+	<select id="selectAll" resultMap="timeActualMap">
+	SELECT
+		id,
+		task_id,
+		begin_time_actual,
+		end_time_actual
+	FROM
+		t_time_actual
+	</select>
+	<!-- 新增预期时间 -->
+	<insert id="addTimeActual" parameterType="cn.sun.tasks.timeactual.domain.TimeActual">
+	INSERT INTO t_time_actual (
+	task_id,
+	begin_time_actual,
+	end_time_actual
+	)
+	VALUES
+	(
+	#{timeActual.taskId},
+	#{timeActual.beginTimeActual},
+	#{timeActual.endTimeActual}
+	)
+	</insert>
+	<!-- 修改预期时间 -->
+	<update id="updateTimeActual" parameterType="cn.sun.tasks.timeactual.domain.TimeActual">
+	UPDATE t_time_actual
+	SET begin_time_actual = #{timeActual.beginTimeActual},
+	 end_time_actual = #{timeActual.endTimeActual}
+	WHERE
+		id = #{timeActual.id}
+	</update>
+	<!-- 删除预期时间 -->
+	<delete id="deleteTimeActualByid" parameterType="Integer">
+	DELETE
+	FROM
+		t_time_actual
+	WHERE
+		id = #{id}
+	</delete>
+
+</mapper>

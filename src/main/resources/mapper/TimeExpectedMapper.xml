@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.sun.tasks.timeexpected.dao.TimeExpectedDao">
+	<resultMap type="cn.sun.tasks.timeexpected.domain.TimeExpected" id="timeExpectedMap">
+		<id property="id" column="id" />
+		<result property="taskId" column="task_id" />
+		<result property="beginTimeExpected" column="begin_time_expected" />
+		<result property="endTimeExpected" column="end_time_expected" />
+		</resultMap>
+	
+	
+	<!-- 查询所有预期时间 -->
+	<select id="selectAll" resultMap="timeExpectedMap">
+	SELECT
+		id,
+		task_id,
+		begin_time_expected,
+		end_time_expected
+	FROM
+		t_time_expected
+	</select>
+	<!-- 新增预期时间 -->
+	<insert id="addTimeExpected" parameterType="cn.sun.tasks.timeexpected.domain.TimeExpected">
+	INSERT INTO t_time_expected (
+	task_id,
+	begin_time_expected,
+	end_time_expected
+	)
+	VALUES
+	(
+	#{timeExpected.taskId},
+	#{timeExpected.beginTimeExpected},
+	#{timeExpected.endTimeExpected}
+	)
+	</insert>
+	<!-- 修改预期时间 -->
+	<update id="updateTimeExpected" parameterType="cn.sun.tasks.timeexpected.domain.TimeExpected">
+	UPDATE t_time_expected
+	SET begin_time_expected = #{timeExpected.beginTimeExpected},
+	 end_time_expected = #{timeExpected.endTimeExpected}
+	WHERE
+		id = #{timeExpected.id}
+	</update>
+	<!-- 删除预期时间 -->
+	<delete id="deleteTimeExpectedByTaskId" parameterType="Integer">
+	DELETE
+	FROM
+		t_time_expected
+	WHERE
+		id = #{id}
+	</delete>
+</mapper>

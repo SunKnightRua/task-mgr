@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>任务列表</title>
+</head>
+<script src="/task-mgr/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+		$(function(){
+	        $.ajax({
+	            //请求方式
+	            type : "POST",
+	            //请求的媒体类型
+	            dataType:"text",
+	            //请求地址${pageContext.request.contextPath}
+	            url : "/task-mgr/task/getPercentOfCompletedTasks",
+	            
+	            //请求成功
+	            success : function(data) {
+	            	console.log(data); 
+	            	$('#percentOfCompletedTasks').html("完成度:"+data+"%");
+	            },
+	            //请求失败，包含具体的错误信息
+	            error : function(e){
+	                console.log(e.status);
+	                console.log(e.responseText);
+	            }
+	        });
+	    });
+</script>
+<body>
+<form action="" method="get">
+	<table border="1" width="80%" align="center">
+		<thead>
+			<tr>
+				<th colspan="10" align="center">
+				任务列表
+				</th>
+			</tr>
+			<tr>
+				<td colspan="10" align="center">
+				<span id="percentOfCompletedTasks" align="left">111</span>
+				</td>
+			</tr>
+		</thead>
+		<tr>
+			<td align='center' width='2.5%'>全选</td>
+			<td align="center" width="10%">任务</td>
+			<td align='center' width='*%'>任务描述</td>
+			<td align="center" width="6%">优先级</td>
+			<td align="center" width="4%">日常任务</td>
+			<td align="center" width="10%">预期时间</td>
+			<td align="center" width="10%">实际时间</td>
+			<td align="center" width="10%">创建时间</td>
+			<td align="center" width="10%">更新时间</td>
+			<td align="center" width="5%">已完成</td>
+		</tr>
+		#foreach($!task in $!tasks)
+		<tr>
+			<td align="center"><input type="checkbox"  name="ids"/></td>
+			<td align="center">$!task.content</td>
+			<td align="center">$!task.desc</td>
+			
+			##优先级
+			<td align="center">
+			#if ($!task.priority == 1)
+			重要<br/>紧急
+			#elseif ($!task.priority == 2)
+			重要<br/>不紧急
+			#elseif ($!task.priority == 3)
+			不重要<br/>紧急
+			#elseif ($!task.priority == 4)
+			不重要<br/>不紧急
+			#end
+			</td> 
+			
+			##日常任务
+			<td align="center">
+			#if($!task.isHabit == 0)
+			否 
+			#elseif ($!task.isHabit == 1)
+			是
+			#end
+			</td>
+			
+			<td align="left">
+			#foreach($!timeExpected in $!task.timeExpecteds)
+			##预期开始时间
+				$!dateTool.format('HH:mm',$!timeExpected.beginTimeExpected)-
+			##预期结束时间
+			$!dateTool.format('HH:mm',$!timeExpected.endTimeExpected)</br>
+			#end
+			</td> 
+			
+			<td align="left">
+			#foreach($!timeActual in $!task.timeActuals)
+			##实际开始时间
+			$!dateTool.format('HH:mm',$!timeActual.beginTimeActual)-
+			##实际结束时间
+			$!dateTool.format('HH:mm',$!timeActual.endTimeActual)</br>
+			#end
+			</td> 
+			
+			<td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!task.createTime)</td>
+			<td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!task.updateTime)</td>
+			
+			##已完成
+			<td align="center">
+			#if($!task.isComplete == 0)
+			否
+			#elseif($!task.isHabit == 1)
+			是
+			#end
+			</td>
+		</tr>
+		#end
+	</table>
+</form>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>添加任务</title>
+</head>
+
+<body>
+<form action="/task-mgr/task/addTask" method="post">
+	<table border="1" width="80%" align="center">
+		<thead>
+			<tr>
+				<th colspan="9" align="center">任务列表</th>
+			</tr>
+		</thead>
+		<tr>
+			<td align="center" width="7%">任务</td>
+			<td align="center" width="*%">任务描述</td>
+			<td align="center" width="6%">优先级</td>
+			<td align="center" width="4%">日常任务</td>
+			<td align="center" width="10%">预期开始时间</td>
+			<td align="center" width="10%">预期结束时间</td>
+			<td align="center" width="10%">实际开始时间</td>
+			<td align="center" width="10%">实际结束时间</td>
+			<td align="center" width="4%">已完成</td>
+		</tr>
+		<tr>
+			<td align="center">
+			<input type="text" name="content"/>
+			</td>
+			
+			<td align="center">
+			<input type="text" name="desc"/>
+			</td>
+			
+			##优先级
+			<td align="center">
+			<select name="priority">
+			<option align="center" value="1">&nbsp;&nbsp;&nbsp;紧急重要&nbsp;&nbsp;&nbsp;</option>
+			<option align="center" value="2">&nbsp;紧急不重要&nbsp;&nbsp;</option>
+			<option align="center" value="3">&nbsp;不紧急重要&nbsp;&nbsp;</option>
+			<option align="center" value="4">不紧急不重要</option>
+			</select>
+			</td> 
+			
+			##日常任务
+			<td align="center" name="isHabit">
+			<select name="isHabit">
+			<option value="0">否</option>
+			<option value="1">是</option>
+			</select>
+			</td>
+			
+			##预期开始时间
+			<td align="center">
+			<input type="datetime" name="beginTimeExpected"/>
+			</td>
+			##预期结束时间
+			<td align="center">
+			<input type="datetime" name="endTimeExpected"/>
+			</td> 
+			
+			##实际开始时间
+			<td align="center">
+			<input type="datetime" name="beginTimeActual"/>
+			</td>
+			##实际结束时间
+			<td align="center">
+			<input type="datetime" name="endTimeActual"/>
+			</td> 
+			
+			##已完成
+			<td align="center" name="isComplete">
+			<select name="isComplete">
+			<option value="0">否</option>
+			<option value="1">是</option>
+			</select>
+			</td>
+		</tr>
+		<tr>
+		<input type="submit">
+		</tr>
+	</table>
+</form>
+</body>
+</html>
