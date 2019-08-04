@@ -1,11 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-<<<<<<< HEAD
+
 	<groupId>cn.sun</groupId>
-=======
-	<groupId>com.alibaba</groupId>
->>>>>>> 72e0e7227e7109ddadecb2e9e611f962c55d5851
 	<artifactId>task-mgr</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
