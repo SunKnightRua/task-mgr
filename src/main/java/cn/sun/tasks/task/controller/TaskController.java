@@ -40,39 +40,36 @@ public class TaskController {
 	 */
 	@RequestMapping("/getAllTasks")
 	public String getAllTasks(Model model) {
-		List<Task> allTasks = taskService.getAllTasks();
+		List<Task> allTasks = taskService.getAllTasks(1, 10);
 		List<Task> tasks = new ArrayList<Task>();
 		for (Task task : allTasks) {
-			if (task.getIsDelete() == 0) {
 				tasks.add(task);
-			}
 		}
-		tasks=PageUtils.showPages(tasks, 10, 1);
 		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
-	/**
-	 *  根据id查询任务
-	 * @param model 
-	 * @param id 任务id
-	 * @return 对应的任务
-	 */
-	@RequestMapping("/getTaskById")
-	public String getTaskById(Model model, Integer id) {
-		List<Task> tasks = new ArrayList<Task>();
-		Task task = taskService.getTaskById(id);
-		tasks.add(task);
-		model.addAttribute("tasks", tasks);
-		return "taskList.vm";
-	}
-
-	@RequestMapping("/getTaskByIds")
-	public String getTaskByIds(Model model, List<Integer> ids) {
-		List<Task> tasks = taskService.getTaskByIds(ids);
-		model.addAttribute("tasks", tasks);
-		return "taskList.vm";
-	}
+//	/**
+//	 *  根据id查询任务
+//	 * @param model 
+//	 * @param id 任务id
+//	 * @return 对应的任务
+//	 */
+//	@RequestMapping("/getTaskById")
+//	public String getTaskById(Model model, Integer id) {
+//		List<Task> tasks = new ArrayList<Task>();
+//		Task task = taskService.getTaskById(id);
+//		tasks.add(task);
+//		model.addAttribute("tasks", tasks);
+//		return "taskList.vm";
+//	}
+//
+//	@RequestMapping("/getTaskByIds")
+//	public String getTaskByIds(Model model, List<Integer> ids) {
+//		List<Task> tasks = taskService.getTaskByIds(ids);
+//		model.addAttribute("tasks", tasks);
+//		return "taskList.vm";
+//	}
 
 	/**
 	 * 新增任务
@@ -115,7 +112,7 @@ public class TaskController {
 		task.setTimeExpecteds(timeExpecteds);
 		task.setTimeActuals(timeActuals);
 		task.setIsComplete(isComplete);
-		taskService.addTask(task);
+//		taskService.addTask(task);
 		return "redirect:taskList.vm";
 	}
 
@@ -127,8 +124,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/updateTask")
 	public String updateTask(Task task) {
-		taskService.updateTask(task);
-		return "redirect:getAllTasks";
+//		taskService.updateTask(task);
+		return "getAllTasks.vm";
 	}
 
 	/**
@@ -138,7 +135,7 @@ public class TaskController {
 	 */
 	@RequestMapping("/deleteTask")
 	public String deleteTask(Integer id) {
-		taskService.deleteTask(id);
+//		taskService.deleteTask(id);
 		return "redirect:getAllTasks";
 	}
 
@@ -149,8 +146,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/getCompletedTasks")
 	public String getCompletedTasks(Model model) {
-		List<Task> tasks = taskService.getCompletedTasks();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getCompletedTasks();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -161,8 +158,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/getOverdueTasks")
 	public String getOverdueTasks(Model model) {
-		List<Task> tasks = taskService.getOverdueTasks();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getOverdueTasks();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -173,8 +170,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/getTodos")
 	public String getTodos(Model model) {
-		List<Task> tasks = taskService.getTodos();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getTodos();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -185,16 +182,16 @@ public class TaskController {
 	 */
 	@RequestMapping("/getPresentTasks")
 	public String getPresentTasks(Model model) {
-		List<Task> tasks = taskService.getPresentTasks();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getPresentTasks();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
 	// 根据优先级查询任务
 	@RequestMapping("/getTasksByPriority")
 	public String getTasksByPriority(Model model, Integer priority) {
-		List<Task> tasks = taskService.getTasksByPriority(priority);
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getTasksByPriority(priority);
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -203,9 +200,9 @@ public class TaskController {
 	 * @return
 	 * @throws IOException 
 	 */
-	@RequestMapping(value="/getPercentOfCompletedTasks", method=RequestMethod.POST)
-	public void getPercentOfCompletedTasks(HttpServletResponse response) throws IOException {
-		String jsonStr ="" + taskService.getPercentOfCompletedTasks();
-		response.getWriter().write(jsonStr);;
-	}
+//	@RequestMapping(value="/getPercentOfCompletedTasks", method=RequestMethod.POST)
+//	public void getPercentOfCompletedTasks(HttpServletResponse response) throws IOException {
+//		String jsonStr ="" + taskService.getPercentOfCompletedTasks();
+//		response.getWriter().write(jsonStr);;
+//	}
 }

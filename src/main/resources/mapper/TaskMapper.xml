@@ -35,26 +35,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 查询所有任务 -->
 	<select id="getAllTasks" resultMap="taskMap">
 		SELECT
-		t.id,
-		t.content,
-		t.`desc`,
-		t.priority,
-		t.is_habit,
-		te.begin_time_expected,
-		te.end_time_expected,
-		ta.begin_time_actual,
-		ta.end_time_actual,
-		t.create_time,
-		t.update_time,
-		t.delete_time,
-		t.is_complete,
-		t.is_delete
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			te.begin_time_expected,
+			te.end_time_expected,
+			ta.begin_time_actual,
+			ta.end_time_actual,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete 
 		FROM
-		(
-		t_task t
-		LEFT JOIN t_time_expected te ON t.id = te.task_id
-		)
-		LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+			t_task t
+			LEFT JOIN t_time_expected te ON t.id = te.task_id
+			LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+			LIMIT #{0}, #{1}
 	</select>
 
 
