@@ -12,7 +12,8 @@ public interface TaskService {
 	 * @return 所有任务
 	 */
 	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize);
-	
+
+
 	/**
 	 * 根据id查找任务
 	 * @param id 任务对应的id
@@ -20,18 +21,20 @@ public interface TaskService {
 	 */
 	public abstract Task getTaskById(Integer id);
 	
+
 //	/**
 //	 * 根据id的集合查找任务
 //	 * @param list id的集合
 //	 * @return 目标任务的集合
 //	 */
 //	public List<Task> getTaskByIds(List<Integer> ids);
-//	
+//
 	/**
 	 * 插入一条任务
 	 * @param task 任务信息
 	 */
 	public void addTask(Task task);
+
 //	
 //	/**
 //	 * 更新一条任务
