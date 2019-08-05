@@ -20,6 +20,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM
 		t_time_actual
 	</select>
+	
+	<!-- 根据任务id查询实际时间 -->
+	<select id="getTimeActualsByTaskId" parameterType="int" resultMap="timeActualMap">
+	SELECT
+		task_id,
+		begin_time_actual,
+		end_time_actual 
+	FROM
+		t_time_actual 
+	WHERE
+		task_id = #{id}
+	</select>
+	
 	<!-- 新增预期时间 -->
 	<insert id="addTimeActual" parameterType="cn.sun.tasks.timeactual.domain.TimeActual">
 	INSERT INTO t_time_actual (
@@ -29,18 +42,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	)
 	VALUES
 	(
-	#{timeActual.taskId},
-	#{timeActual.beginTimeActual},
-	#{timeActual.endTimeActual}
+	#{taskId},
+	#{beginTimeActual},
+	#{endTimeActual}
 	)
 	</insert>
 	<!-- 修改预期时间 -->
 	<update id="updateTimeActual" parameterType="cn.sun.tasks.timeactual.domain.TimeActual">
 	UPDATE t_time_actual
-	SET begin_time_actual = #{timeActual.beginTimeActual},
-	 end_time_actual = #{timeActual.endTimeActual}
+	SET begin_time_actual = #{beginTimeActual},
+	 end_time_actual = #{endTimeActual}
 	WHERE
-		id = #{timeActual.id}
+		id = #{id}
 	</update>
 	<!-- 删除预期时间 -->
 	<delete id="deleteTimeActualByid" parameterType="Integer">

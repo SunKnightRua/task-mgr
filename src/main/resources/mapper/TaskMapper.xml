@@ -35,62 +35,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 查询所有任务 -->
 	<select id="getAllTasks" resultMap="taskMap">
 		SELECT
-		t.id,
-		t.content,
-		t.`desc`,
-		t.priority,
-		t.is_habit,
-		te.begin_time_expected,
-		te.end_time_expected,
-		ta.begin_time_actual,
-		ta.end_time_actual,
-		t.create_time,
-		t.update_time,
-		t.delete_time,
-		t.is_complete,
-		t.is_delete
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete 
 		FROM
-		(
-		t_task t
-		LEFT JOIN t_time_expected te ON t.id = te.task_id
-		)
-		LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+			t_task t
+			LIMIT #{0}, #{1}
 	</select>
 
 
 	<!-- 根据id查询任务 -->
 	<select id="getTaskById" parameterType="Integer" resultMap="taskMap">
 		SELECT
-		t.id,
-		t.content,
-		t.`desc`,
-		t.priority,
-		t.is_habit,
-		te.begin_time_expected,
-		te.end_time_expected,
-		ta.begin_time_actual,
-		ta.end_time_actual,
-		t.create_time,
-		t.update_time,
-		t.delete_time,
-		t.is_complete,
-		t.is_delete
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete 
 		FROM
-		(
-		(
-		t_task t
-		LEFT JOIN t_time_expected te ON t.id = te.task_id
-		)
-		LEFT JOIN t_time_actual
-		ta ON t.id = ta.task_id
-		)
+			t_task t
 		WHERE
-		t.id = #{id}
+			t.id = #{id}
 	</select>
 
 
 	<!-- 添加任务 -->
-	<insert id="insertTask" parameterType="cn.sun.tasks.task.domain.Task"
+	<insert id="insertTask" parameterType="cn.sun.tasks.task.domain.Task" keyColumn="id"
 		useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO t_task (
 		content,
@@ -101,11 +83,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 		VALUES
 		(
-		#{task.content},
-		#{task.desc},
-		#{task.priority},
-		#{task.is_habit},
-		now(),
+		#{content},
+		#{desc},
+		#{priority},
+		#{isHabit},
+		now()
 		)
 	</insert>
 
@@ -113,13 +95,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 更新任务 -->
 	<update id="updateTask" parameterType="cn.sun.tasks.task.domain.Task"> 
 	UPDATE t_task
-	SET content = #{task.content},
-	 `desc` = #{task.desc},
-	 priority = #{task.priority},
-	 is_habit = #{task.is_habit},
+	SET content = #{content},
+	 `desc` = #{desc},
+	 priority = #{priority},
+	 is_habit = #{isHabit},
 	 update_time = now()
 	WHERE
-		id = #{task.id}
+		id = #{id}
 	</update>
 
 

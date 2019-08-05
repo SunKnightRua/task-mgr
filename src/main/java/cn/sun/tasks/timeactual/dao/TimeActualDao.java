@@ -14,4 +14,11 @@ public interface TimeActualDao {
 	public void addTimeActual(TimeActual timeActual);
 	public void updateTimeActual(TimeActual timeActual);
 	public void deleteTimeActualByid(Integer id);
+	
+	/**
+	 * 根据任务id查询实际时间
+	 * @param id任务id
+	 * @return 该任务的实际时间的list
+	 */
+	public List<TimeActual> getTimeActualsByTaskId(int id);
 }

@@ -22,6 +22,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM
 		t_time_expected
 	</select>
+	
+	<!-- 根据任务id查询预期时间 -->
+	<select id="getTimeExpectedsByTaskId" parameterType="int" resultMap="timeExpectedMap">
+	SELECT
+		id,
+		task_id,
+		begin_time_expected,
+		end_time_expected 
+	FROM
+		t_time_expected 
+	WHERE
+		task_id = #{id}
+	</select>
+	
+	
 	<!-- 新增预期时间 -->
 	<insert id="addTimeExpected" parameterType="cn.sun.tasks.timeexpected.domain.TimeExpected">
 	INSERT INTO t_time_expected (
@@ -31,18 +46,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	)
 	VALUES
 	(
-	#{timeExpected.taskId},
-	#{timeExpected.beginTimeExpected},
-	#{timeExpected.endTimeExpected}
+	#{taskId},
+	#{beginTimeExpected},
+	#{endTimeExpected}
 	)
 	</insert>
 	<!-- 修改预期时间 -->
 	<update id="updateTimeExpected" parameterType="cn.sun.tasks.timeexpected.domain.TimeExpected">
 	UPDATE t_time_expected
-	SET begin_time_expected = #{timeExpected.beginTimeExpected},
-	 end_time_expected = #{timeExpected.endTimeExpected}
+	SET begin_time_expected = #{beginTimeExpected},
+	 end_time_expected = #{endTimeExpected}
 	WHERE
-		id = #{timeExpected.id}
+		id = #{id}
 	</update>
 	<!-- 删除预期时间 -->
 	<delete id="deleteTimeExpectedByTaskId" parameterType="Integer">

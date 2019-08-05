@@ -13,7 +13,7 @@ public interface TaskDao {
 	 * 获取所有任务
 	 * @return
 	 */
-	public List<Task> getAllTasks();
+	public List<Task> getAllTasks(Integer start, Integer offset);
 	
 	/**
 	 * 、根据id获取任务

@@ -34,20 +34,17 @@ public class TaskController {
 	private TaskService taskService;
 
 	/**
-	 * 获取所有未完成未删除任务
+	 * 分页获取任务
 	 * @param model
 	 * @return 获取所有任务
 	 */
 	@RequestMapping("/getAllTasks")
 	public String getAllTasks(Model model) {
-		List<Task> allTasks = taskService.getAllTasks();
+		List<Task> allTasks = taskService.getAllTasks(1, 50);
 		List<Task> tasks = new ArrayList<Task>();
 		for (Task task : allTasks) {
-			if (task.getIsDelete() == 0) {
 				tasks.add(task);
-			}
 		}
-		tasks=PageUtils.showPages(tasks, 10, 1);
 		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
@@ -67,12 +64,12 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	@RequestMapping("/getTaskByIds")
-	public String getTaskByIds(Model model, List<Integer> ids) {
-		List<Task> tasks = taskService.getTaskByIds(ids);
-		model.addAttribute("tasks", tasks);
-		return "taskList.vm";
-	}
+//	@RequestMapping("/getTaskByIds")
+//	public String getTaskByIds(Model model, List<Integer> ids) {
+//		List<Task> tasks = taskService.getTaskByIds(ids);
+//		model.addAttribute("tasks", tasks);
+//		return "taskList.vm";
+//	}
 
 	/**
 	 * 新增任务
@@ -99,13 +96,26 @@ public class TaskController {
 		List<TimeExpected> timeExpecteds = new ArrayList<TimeExpected>();
 		List<TimeActual> timeActuals = new ArrayList<TimeActual>();
 		TimeExpected timeExpected = new TimeExpected();
-		timeExpected.setBeginTimeExpected(beginTimeExpected);
-		timeExpected.setEndTimeExpected(endTimeExpected);
-		timeExpecteds.add(timeExpected);
-		TimeActual timeActual =new TimeActual();
-		timeActual.setBeginTimeActual(beginTimeActual);
-		timeActual.setEndTimeActual(endTimeActual);
-		timeActuals.add(timeActual);
+		if(beginTimeExpected != null){
+			timeExpected.setBeginTimeExpected(beginTimeExpected);
+		}
+		if(endTimeExpected != null){
+			timeExpected.setEndTimeExpected(endTimeExpected);
+		}
+		if(timeExpected.getBeginTimeExpected() != null || timeExpected.getEndTimeExpected() != null){
+			timeExpecteds.add(timeExpected);
+		}
+		
+		TimeActual timeActual = new TimeActual();
+		if(beginTimeActual != null){
+			timeActual.setBeginTimeActual(beginTimeActual);
+		}
+		if(endTimeActual != null){
+			timeActual.setEndTimeActual(endTimeActual);
+		}
+		if(timeActual.getBeginTimeActual() != null || timeActual.getEndTimeActual() != null){
+			timeActuals.add(timeActual);
+		}
 		
 		Task task = new Task();
 		task.setContent(content);
@@ -116,7 +126,7 @@ public class TaskController {
 		task.setTimeActuals(timeActuals);
 		task.setIsComplete(isComplete);
 		taskService.addTask(task);
-		return "redirect:taskList.vm";
+		return "taskList.vm";
 	}
 
 	// 待修改
@@ -127,8 +137,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/updateTask")
 	public String updateTask(Task task) {
-		taskService.updateTask(task);
-		return "redirect:getAllTasks";
+//		taskService.updateTask(task);
+		return "getAllTasks.vm";
 	}
 
 	/**
@@ -138,7 +148,7 @@ public class TaskController {
 	 */
 	@RequestMapping("/deleteTask")
 	public String deleteTask(Integer id) {
-		taskService.deleteTask(id);
+//		taskService.deleteTask(id);
 		return "redirect:getAllTasks";
 	}
 
@@ -149,8 +159,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/getCompletedTasks")
 	public String getCompletedTasks(Model model) {
-		List<Task> tasks = taskService.getCompletedTasks();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getCompletedTasks();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -161,8 +171,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/getOverdueTasks")
 	public String getOverdueTasks(Model model) {
-		List<Task> tasks = taskService.getOverdueTasks();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getOverdueTasks();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -173,8 +183,8 @@ public class TaskController {
 	 */
 	@RequestMapping("/getTodos")
 	public String getTodos(Model model) {
-		List<Task> tasks = taskService.getTodos();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getTodos();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -185,16 +195,16 @@ public class TaskController {
 	 */
 	@RequestMapping("/getPresentTasks")
 	public String getPresentTasks(Model model) {
-		List<Task> tasks = taskService.getPresentTasks();
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getPresentTasks();
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
 	// 根据优先级查询任务
 	@RequestMapping("/getTasksByPriority")
 	public String getTasksByPriority(Model model, Integer priority) {
-		List<Task> tasks = taskService.getTasksByPriority(priority);
-		model.addAttribute("tasks", tasks);
+//		List<Task> tasks = taskService.getTasksByPriority(priority);
+//		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -203,9 +213,9 @@ public class TaskController {
 	 * @return
 	 * @throws IOException 
 	 */
-	@RequestMapping(value="/getPercentOfCompletedTasks", method=RequestMethod.POST)
-	public void getPercentOfCompletedTasks(HttpServletResponse response) throws IOException {
-		String jsonStr ="" + taskService.getPercentOfCompletedTasks();
-		response.getWriter().write(jsonStr);;
-	}
+//	@RequestMapping(value="/getPercentOfCompletedTasks", method=RequestMethod.POST)
+//	public void getPercentOfCompletedTasks(HttpServletResponse response) throws IOException {
+//		String jsonStr ="" + taskService.getPercentOfCompletedTasks();
+//		response.getWriter().write(jsonStr);;
+//	}
 }
