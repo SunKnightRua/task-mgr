@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 
 	<!-- 查询所有任务 -->
-	<select id="getAllTasks" resultMap="taskMap">
+	<select id="getAllTasks" parameterType="int" resultMap="taskMap">
 		SELECT
 			t.id,
 			t.content,
@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			t.is_delete 
 		FROM
 			t_task t
-			LIMIT #{0}, #{1}
+		LIMIT #{start}, #{offset}
 	</select>
 
 

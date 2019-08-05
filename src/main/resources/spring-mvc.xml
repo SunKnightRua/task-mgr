@@ -11,11 +11,9 @@
 	<context:component-scan base-package="cn.sun.tasks.*.controller" />
 
 	<!-- 配置视图解析器,跳转的文件的前后缀 -->
-	<!-- <bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/view/" />
-		<property name="suffix" value=".jsp" />
-	</bean> -->
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="prefix" value="/WEB-INF/view/" /> <property name="suffix" 
+		value=".jsp" /> </bean> -->
 
 	<!-- 视图模式配置,velocity配置文件 -->
 	<bean id="velocityConfig"
@@ -29,13 +27,13 @@
 	<bean id="velocityViewResolver"
 
 		class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
-<!-- 	<property name="suffix" value=".vm" /> -->
+		<!-- <property name="suffix" value=".vm" /> -->
 		<property name="suffix" value="" />
 		<property name="contentType">
 			<value>text/html;charset=UTF-8</value>
 		</property>
 		<property name="dateToolAttribute">
-        	<value>dateTool</value>
-   		</property>
+			<value>dateTool</value>
+		</property>
 	</bean>
 </beans>
