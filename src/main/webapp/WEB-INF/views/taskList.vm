@@ -6,12 +6,6 @@
 </head>
 <script src="/task-mgr/js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
-//分页
-	window.$url = window.location.href;
-	$url = window.location.href;
-	$url = $url.split("?", 1)[0];
-</script>
-<script type="text/javascript">
 /*  
 	//获取完成任务数/总任务数
 	$(function(){
@@ -142,36 +136,32 @@
 	#set($pages = $page1)  
 #end
 ##当前页
-#set($pageNo = $index)
 #set($pre1_page = $pageNo - 1)
 #set($pre2_page = $pageNo - 2)
 #set($next1_page = $pageNo + 1)
 #set($next2_page = $pageNo + 2)
 <h2 align="center">
-
-这里还是获取不到$url
-$url
 #if($pages > 1)
 	#if($pageNo>1)
-		<a :href="'http://localhost:8080/task-mgr/task/getAllTasks?pageNo=1&pageSize='+$pageSize+'.html'" >首页</a>
-		<a :href="$url+'?pageNo='+$pre1_page+'&pageSize='+$pageSize">上页</a>
+		<a href="javascript:;" onclick="firstPage()">首页</a>
+		<a href="javascript:;" onclick="prePage()">上页</a>
 	#end
 	#if($pre2_page >=1)
-		<a :href="$url+'?pageNo='+$pre2_page+'&pageSize='+$pageSize">$pre2_page</a>
+		<a href="javascript:;" onclick="pre2Page()">$pre2_page</a>
 	#end
 	#if($pre1_page >=1)
-		<a :href="$url+'?pageNo='+$pre1_page+'&pageSize='+$pageSize">$pre1_page</a>
+		<a href="javascript:;" onclick="prePage()">$pre1_page</a>
 	#end
-		<a :href="$url+'?pageNo='+$pageNo">$pageNo</a>
+		<a href="javascript:;" disabled> $pageNo</a>
 	#if($next1_page <=$pages)
-		<a :href="$url+'?pageNo='+$next1_page+'&pageSize='+$pageSize">$next1_page</a>
+		<a href="javascript:;" onclick="nextPage()">$next1_page</a>
 	#end
 	#if($next2_page <=$pages)
-		<a :href="$url+'?pageNo='+$next2_page+'&pageSize='+$pageSize">$next2_page</a>
+		<a href="javascript:;" onclick="next2Page()">$next2_page</a>
 	#end
 	#if($pageNo < $pages)
-		<a :href="$url+'?pageNo='+$next1_page+'&pageSize='+$pageSize">下页</a>
-		<a :href="$url+'?pageNo='+$pages&pageSize='+$pageSize">尾页</a>
+		<a href="javascript:;" onclick="nextPage()">下页</a>
+		<a href="javascript:;" onclick="lastPage()">尾页</a>
 	#end
 #end 
 	#if($pages>0)
@@ -183,14 +173,48 @@ $url
  </h2>
 </body>
 <script type="text/javascript">
+	//获取URL
+	var $url = location.href;
+	$url = $url.split("?", 1)[0];
+	var pages =document.getElementById("pages").innerHTML;
 	//跳转到指定页码
 	function jump(){
-		var pageNo = document.getElementById("index").value;
-		var pages =document.getElementById("pages").innerHTML;
-		if(pageNo!=null&&pageNo>0&&pageNo<=pages){//有输入值，并且输入值在1到总页数之间才跳转。
-			window.location.href = $url + "?pageNo=" + pageNo + "&pageSize=" + $pageSize;
-			//window.event.returnValue=false;
-	      }
-	   }
+		var $targetPage = document.getElementById("index").value;
+		if($targetPage != null && $targetPage>0 && $targetPage<=pages){//有输入值，并且输入值在1到总页数之间才跳转。
+			window.location.href = $url + "?pageNo=" + $targetPage + "&pageSize=" + $pageSize;
+		}
+	};
+	//首页
+	function firstPage(){
+		window.location.href = $url + "?pageNo=1&pageSize=" + $pageSize;
+	};
+	//上页
+	function prePage(){
+		var $prePage = ${pageNo}-1;
+		window.location.href = $url + "?pageNo=" + $prePage + "&pageSize=" + $pageSize;
+	};
+	//上上页
+	function pre2Page(){
+		var $pre2Page = ${pageNo}-2;
+		window.location.href = $url + "?pageNo=" + $pre2Page + "&pageSize=" + $pageSize;
+	};
+	//当前页
+	function currPage(){
+		window.location.href = $url + "?pageNo=" + $pageNo + "&pageSize=" + $pageSize;
+	};
+	//下页
+	function nextPage(){
+		var $nextPage = ${pageNo}+1;
+		window.location.href = $url + "?pageNo=" + $nextPage + "&pageSize=" + $pageSize;
+	};
+	//下下页
+	function next2Page(){
+		var $next2Page = ${pageNo}+2;
+		window.location.href = $url + "?pageNo=" + $next2Page + "&pageSize=" + $pageSize;
+	};
+	//尾页
+	function lastPage(){
+		window.location.href = $url + "?pageNo=" + pages + "&pageSize=" + $pageSize;
+	};
 </script>
 </html>
