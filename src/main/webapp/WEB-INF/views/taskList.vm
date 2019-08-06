@@ -6,27 +6,36 @@
 </head>
 <script src="/task-mgr/js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
-		$(function(){
-	        $.ajax({
-	            //请求方式
-	            type : "POST",
-	            //请求的媒体类型
-	            dataType:"text",
-	            //请求地址${pageContext.request.contextPath}
-	            url : "/task-mgr/task/getPercentOfCompletedTasks",
-	            
-	            //请求成功
-	            success : function(data) {
-	            	console.log(data); 
-	            	$('#percentOfCompletedTasks').html("完成度:"+data+"%");
-	            },
-	            //请求失败，包含具体的错误信息
-	            error : function(e){
-	                console.log(e.status);
-	                console.log(e.responseText);
-	            }
-	        });
-	    });
+//分页
+	window.$url = window.location.href;
+	$url = window.location.href;
+	$url = $url.split("?", 1)[0];
+</script>
+<script type="text/javascript">
+/*  
+	//获取完成任务数/总任务数
+	$(function(){
+		$.ajax({
+			//请求方式
+			type : "POST",
+			//请求的媒体类型
+			dataType:"text",
+			//请求地址${pageContext.request.contextPath}
+			url : "/task-mgr/task/getPercentOfCompletedTasks",
+            
+			//请求成功
+			success : function(data) {
+				console.log(data); 
+				$('#percentOfCompletedTasks').html("完成度:"+data+"%");
+			},
+			//请求失败，包含具体的错误信息
+			error : function(e){
+				console.log(e.status);
+				console.log(e.responseText);
+			}
+		});
+	}); 
+*/ 
 </script>
 <body>
 <form action="" method="get">
@@ -39,7 +48,7 @@
 			</tr>
 			<tr>
 				<td colspan="10" align="center">
-				<span id="percentOfCompletedTasks" align="left">111</span>
+					<span id="percentOfCompletedTasks" align="left">111</span>
 				</td>
 			</tr>
 		</thead>
@@ -116,5 +125,72 @@
 		#end
 	</table>
 </form>
+
+<!-- 分页 -->
+##一页大小
+#set($pageSize = 4)
+#set($page2 = $totalCount/$pageSize)
+#set($page1 = $totalCount/$pageSize+1)
+##设置总页数
+#if($totalCount/$pageSize ==0)
+	#if($totalCount<$pageSize)
+		#set($pages = $page2+1)
+	#else
+		#set($pages = $page2)
+	#end 
+#else 
+	#set($pages = $page1)  
+#end
+##当前页
+#set($pageNo = $index)
+#set($pre1_page = $pageNo - 1)
+#set($pre2_page = $pageNo - 2)
+#set($next1_page = $pageNo + 1)
+#set($next2_page = $pageNo + 2)
+<h2 align="center">
+
+这里还是获取不到$url
+$url
+#if($pages > 1)
+	#if($pageNo>1)
+		<a :href="'http://localhost:8080/task-mgr/task/getAllTasks?pageNo=1&pageSize='+$pageSize+'.html'" >首页</a>
+		<a :href="$url+'?pageNo='+$pre1_page+'&pageSize='+$pageSize">上页</a>
+	#end
+	#if($pre2_page >=1)
+		<a :href="$url+'?pageNo='+$pre2_page+'&pageSize='+$pageSize">$pre2_page</a>
+	#end
+	#if($pre1_page >=1)
+		<a :href="$url+'?pageNo='+$pre1_page+'&pageSize='+$pageSize">$pre1_page</a>
+	#end
+		<a :href="$url+'?pageNo='+$pageNo">$pageNo</a>
+	#if($next1_page <=$pages)
+		<a :href="$url+'?pageNo='+$next1_page+'&pageSize='+$pageSize">$next1_page</a>
+	#end
+	#if($next2_page <=$pages)
+		<a :href="$url+'?pageNo='+$next2_page+'&pageSize='+$pageSize">$next2_page</a>
+	#end
+	#if($pageNo < $pages)
+		<a :href="$url+'?pageNo='+$next1_page+'&pageSize='+$pageSize">下页</a>
+		<a :href="$url+'?pageNo='+$pages&pageSize='+$pageSize">尾页</a>
+	#end
+#end 
+	#if($pages>0)
+	 当前第<span>$pageNo</span>页,共<span id="pages">$pages</span>页 
+	 <input type="text" id= "index" style="width:30px"><a href="javascript:void(0)" onClick="jump()">跳转</a>
+ #else
+	没有找到东西
+ #end
+ </h2>
 </body>
+<script type="text/javascript">
+	//跳转到指定页码
+	function jump(){
+		var pageNo = document.getElementById("index").value;
+		var pages =document.getElementById("pages").innerHTML;
+		if(pageNo!=null&&pageNo>0&&pageNo<=pages){//有输入值，并且输入值在1到总页数之间才跳转。
+			window.location.href = $url + "?pageNo=" + pageNo + "&pageSize=" + $pageSize;
+			//window.event.returnValue=false;
+	      }
+	   }
+</script>
 </html>

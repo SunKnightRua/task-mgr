@@ -18,6 +18,12 @@ public interface TaskDao {
 	public List<Task> getAllTasks(@Param("start")Integer start, @Param("offset")Integer offset);
 	
 	/**
+	 * 获取所有任务总数量
+	 * @return
+	 */
+	public int getAllTasksTotalCount();
+	
+	/**
 	 * 、根据id获取任务
 	 * @param id
 	 * @return
@@ -42,4 +48,5 @@ public interface TaskDao {
 	 * @param id
 	 */
 	public void deleteTask(Integer id);
+
 }

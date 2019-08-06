@@ -39,6 +39,11 @@ public class TaskServiceBizImpl implements TaskService {
 		}
 		return allTasks;
 	}
+	// 获取所有任务总数量
+	@Override
+	public int getAllTasksTotalCount() {
+		return taskDao.getAllTasksTotalCount();
+	}
 	
 	// 根据id查询任务
 	@Override
@@ -179,6 +184,7 @@ public class TaskServiceBizImpl implements TaskService {
 		}
 		
 	}
+
 
 //
 //	// 更新任务

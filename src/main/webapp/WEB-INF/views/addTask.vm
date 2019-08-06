@@ -9,9 +9,7 @@
 <form action="/task-mgr/task/addTask" method="post">
 	<table border="1" width="80%" align="center">
 		<thead>
-			<tr>
-				<th colspan="9" align="center">任务列表</th>
-			</tr>
+			<th colspan="9" align="center">添加列表</th>
 		</thead>
 		<tr>
 			<td align="center" width="7%">任务</td>
@@ -78,7 +76,8 @@
 			</td>
 		</tr>
 		<tr>
-		<input type="submit">
+			<td colspan="8"></td>
+			<td align="right"><input type="submit"></td>
 		</tr>
 	</table>
 </form>

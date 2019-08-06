@@ -13,6 +13,11 @@ public interface TaskService {
 	 */
 	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize);
 
+	/**
+	 * 查找所有任务总数量
+	 * @return 所有任务总数量
+	 */
+	public abstract int getAllTasksTotalCount();
 
 	/**
 	 * 根据id查找任务
@@ -34,6 +39,8 @@ public interface TaskService {
 	 * @param task 任务信息
 	 */
 	public void addTask(Task task);
+
+
 
 //	
 //	/**

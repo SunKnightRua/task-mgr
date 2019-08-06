@@ -33,48 +33,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 
 	<!-- 查询所有任务 -->
-	<select id="getAllTasks" parameterType="int" resultMap="taskMap">
+	<select id="getAllTasks" resultMap="taskMap">
 		SELECT
-			t.id,
-			t.content,
-			t.`desc`,
-			t.priority,
-			t.is_habit,
-			t.create_time,
-			t.update_time,
-			t.delete_time,
-			t.is_complete,
-			t.is_delete 
+		t.id,
+		t.content,
+		t.`desc`,
+		t.priority,
+		t.is_habit,
+		t.create_time,
+		t.update_time,
+		t.delete_time,
+		t.is_complete,
+		t.is_delete
 		FROM
-			t_task t
+		t_task t
 		LIMIT #{start}, #{offset}
 	</select>
 
+	<!-- 查询所有任务总数量TotalCount -->
+	<select id="getAllTasksTotalCount" resultType="int">
+		SELECT
+			count( * ) 
+		FROM
+			t_task
+	</select>
 
 	<!-- 根据id查询任务 -->
 	<select id="getTaskById" parameterType="Integer" resultMap="taskMap">
 		SELECT
-			t.id,
-			t.content,
-			t.`desc`,
-			t.priority,
-			t.is_habit,
-			t.create_time,
-			t.update_time,
-			t.delete_time,
-			t.is_complete,
-			t.is_delete 
+		t.id,
+		t.content,
+		t.`desc`,
+		t.priority,
+		t.is_habit,
+		t.create_time,
+		t.update_time,
+		t.delete_time,
+		t.is_complete,
+		t.is_delete
 		FROM
-			t_task t
+		t_task t
 		WHERE
-			t.id = #{id}
+		t.id = #{id}
 	</select>
 
 
 	<!-- 添加任务 -->
-	<insert id="insertTask" parameterType="cn.sun.tasks.task.domain.Task" keyColumn="id"
-		useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO t_task (
+	<insert id="insertTask" parameterType="cn.sun.tasks.task.domain.Task"
+		keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_task
+		(
 		content,
 		`desc`,
 		priority,
@@ -93,14 +101,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 	<!-- 更新任务 -->
-	<update id="updateTask" parameterType="cn.sun.tasks.task.domain.Task"> 
-	UPDATE t_task
-	SET content = #{content},
-	 `desc` = #{desc},
-	 priority = #{priority},
-	 is_habit = #{isHabit},
-	 update_time = now()
-	WHERE
+	<update id="updateTask" parameterType="cn.sun.tasks.task.domain.Task">
+		UPDATE t_task
+		SET content = #{content},
+		`desc` = #{desc},
+		priority = #{priority},
+		is_habit = #{isHabit},
+		update_time = now()
+		WHERE
 		id = #{id}
 	</update>
 
@@ -108,7 +116,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 删除任务 -->
 	<update id="deleteTask" parameterType="Integer">
 		UPDATE t_task
-		SET is_delete = 1
+		SET is_delete
+		= 1
 		WHERE
 		id = #{id}
 	</update>
