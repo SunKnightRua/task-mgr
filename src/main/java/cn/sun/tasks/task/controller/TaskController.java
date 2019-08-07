@@ -47,7 +47,7 @@ public class TaskController {
 			tasks.add(task);
 		}
 		model.addAttribute("tasks", tasks);
-		int totalCount = taskService.getAllTasksTotalCount();
+		int totalCount = taskService.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("pageNo", pageNo);
 		return "taskList.vm";

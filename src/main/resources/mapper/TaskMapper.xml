@@ -47,11 +47,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			t.is_delete
 		FROM
 			t_task t
-		WHERE t.content LIKE '%' + #{content} + '%' OR t.content IS NULL 
-		AND t.`desc` LIKE '%' + #{desc} + '%' OR t.`desc` IS NULL 
-		AND t.priority = #{priority} OR t.priority IS NULL
-		AND t.is_habit = #{isHabit} OR t.is_habit IS NULL
-		AND t.is_complete = #{isComplete} OR t.is_complete IS NULL
+		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} IS NULL )
+		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} IS NULL )
+		AND t.priority = #{priority} 
+		AND t.is_habit = #{isHabit} 
+		AND t.is_complete = #{isComplete} 
 		LIMIT #{start}, #{offset}
 	</select>
 
@@ -60,7 +60,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT
 			count( * ) 
 		FROM
-			t_task
+			t_task t
+		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} IS NULL )
+		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} IS NULL )
+		AND t.priority = #{priority}
+		AND t.is_habit = #{isHabit} 
+		AND t.is_complete = #{isComplete} 
 	</select>
 
 	<!-- 根据id查询任务 -->

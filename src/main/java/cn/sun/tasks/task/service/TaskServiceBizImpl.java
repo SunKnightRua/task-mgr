@@ -26,8 +26,7 @@ public class TaskServiceBizImpl implements TaskService {
 	@Override
 	public List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, byte priority,
 			byte isHabit, byte isComplete) {
-		List<Task> allTasks = taskDao.getAllTasks((pageNo - 1) * pageSize, pageSize, content, desc, priority, isHabit,
-				isComplete);
+		List<Task> allTasks = taskDao.getAllTasks((pageNo - 1) * pageSize, pageSize, content, desc, priority, isHabit, isComplete);
 		for (Task task : allTasks) {
 			List<TimeExpected> timeExpecteds = timeExpectedDao.getTimeExpectedsByTaskId(task.getId());
 			task.setTimeExpecteds(timeExpecteds);
@@ -41,8 +40,8 @@ public class TaskServiceBizImpl implements TaskService {
 
 	// 获取所有任务总数量
 	@Override
-	public int getAllTasksTotalCount() {
-		return taskDao.getAllTasksTotalCount();
+	public int getAllTasksTotalCount(String content, String desc, byte priority, byte isHabit, byte isComplete) {
+		return taskDao.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
 	}
 
 	// 根据id查询任务

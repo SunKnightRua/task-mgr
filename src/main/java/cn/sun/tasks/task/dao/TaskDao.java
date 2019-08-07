@@ -26,7 +26,7 @@ public interface TaskDao {
 	 * 获取所有任务总数量
 	 * @return
 	 */
-	public int getAllTasksTotalCount();
+	public int getAllTasksTotalCount(@Param("content")String content, @Param("desc")String desc, @Param("priority")byte priority, @Param("isHabit")byte isHabit, @Param("isComplete")byte isComplete);
 	
 	/**
 	 * 、根据id获取任务

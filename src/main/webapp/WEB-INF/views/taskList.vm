@@ -133,6 +133,7 @@
 		<td align="left"><input type="text"  name="desc" id="searTabDesc"></td>
 		<td align="left">
 			<select  name="priority" id="searTabPriority">
+				<option value=""></option>
 				<option value="1">重要紧急</option>
 				<option value="2">重要不紧急</option>
 				<option value="3">不重要紧急</option>
@@ -141,12 +142,14 @@
 		</td>
 		<td align="left">
 			<select  name="isHabit" id="searTabIsHabit">
+				<option value=""></option>
 				<option value="0">否</option>
 				<option value="1">是</option>
 			</select>
 		</td>
 		<td align="left" >
 			<select  name="isComplete" id="searTabIsComplete">
+				<option value=""></option>
 				<option value="0">否</option>
 				<option value="1">是</option>
 			</select>
