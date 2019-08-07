@@ -13,9 +13,14 @@ public interface TaskDao {
 
 	/**
 	 * 获取所有任务
+	 * @param isComplete 
+	 * @param isHabit 
+	 * @param priority 
+	 * @param desc 
+	 * @param content 
 	 * @return
 	 */
-	public List<Task> getAllTasks(@Param("start")Integer start, @Param("offset")Integer offset);
+	public List<Task> getAllTasks(@Param("start")Integer start, @Param("offset")Integer offset, @Param("content")String content, @Param("desc")String desc, @Param("priority")byte priority, @Param("isHabit")byte isHabit, @Param("isComplete")byte isComplete);
 	
 	/**
 	 * 获取所有任务总数量

@@ -35,18 +35,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 查询所有任务 -->
 	<select id="getAllTasks" resultMap="taskMap">
 		SELECT
-		t.id,
-		t.content,
-		t.`desc`,
-		t.priority,
-		t.is_habit,
-		t.create_time,
-		t.update_time,
-		t.delete_time,
-		t.is_complete,
-		t.is_delete
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete
 		FROM
-		t_task t
+			t_task t
+		WHERE t.content LIKE '%' + #{content} + '%' OR t.content IS NULL 
+		AND t.`desc` LIKE '%' + #{desc} + '%' OR t.`desc` IS NULL 
+		AND t.priority = #{priority} OR t.priority IS NULL
+		AND t.is_habit = #{isHabit} OR t.is_habit IS NULL
+		AND t.is_complete = #{isComplete} OR t.is_complete IS NULL
 		LIMIT #{start}, #{offset}
 	</select>
 

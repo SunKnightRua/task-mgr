@@ -119,6 +119,40 @@
 		#end
 	</table>
 </form>
+<!-- 搜索 -->
+<table align="center" width="50%" border="1" onchange="search()">
+	<tr>
+		<td align="center">任务</td>
+		<td align="center">任务描述</td>
+		<td align="center">优先级</td>
+		<td align="center">日常任务</td>
+		<td align="center">已完成</td>
+	</tr>
+	<tr>
+		<td align="left"><input type="text" name="content" id="searTabContent"></td>
+		<td align="left"><input type="text"  name="desc" id="searTabDesc"></td>
+		<td align="left">
+			<select  name="priority" id="searTabPriority">
+				<option value="1">重要紧急</option>
+				<option value="2">重要不紧急</option>
+				<option value="3">不重要紧急</option>
+				<option value="4">不重要不紧急</option>
+			</select>
+		</td>
+		<td align="left">
+			<select  name="isHabit" id="searTabIsHabit">
+				<option value="0">否</option>
+				<option value="1">是</option>
+			</select>
+		</td>
+		<td align="left" >
+			<select  name="isComplete" id="searTabIsComplete">
+				<option value="0">否</option>
+				<option value="1">是</option>
+			</select>
+		</td>
+	</tr>
+</table>
 
 <!-- 分页 -->
 ##一页大小
@@ -175,46 +209,74 @@
 <script type="text/javascript">
 	//获取URL
 	var $url = location.href;
+	var content = document.getElementById("searTabContent").value;
+	var desc = document.getElementById("searTabDesc").value;
+	var priority = document.getElementById("searTabPriority").value;
+	var isHabit = document.getElementById("searTabIsHabit").value;
+	var isComplete = document.getElementById("searTabIsComplete").value;
 	$url = $url.split("?", 1)[0];
 	var pages =document.getElementById("pages").innerHTML;
+	//搜索方法
+	function search(){
+		window.location.href = $url+"?pageNo="+pages+"&pageSize="+$pageSize+"&content="
+				+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+				+isHabit+"&isComplete="+isComplete;
+	}
+	//分页方法
 	//跳转到指定页码
 	function jump(){
 		var $targetPage = document.getElementById("index").value;
 		if($targetPage != null && $targetPage>0 && $targetPage<=pages){//有输入值，并且输入值在1到总页数之间才跳转。
-			window.location.href = $url + "?pageNo=" + $targetPage + "&pageSize=" + $pageSize;
+			window.location.href = $url + "?pageNo=" + $targetPage + "&pageSize=" + $pageSize+"&content="
+			+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+			+isHabit+"&isComplete="+isComplete;
 		}
 	};
 	//首页
 	function firstPage(){
-		window.location.href = $url + "?pageNo=1&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=1&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 	//上页
 	function prePage(){
 		var $prePage = ${pageNo}-1;
-		window.location.href = $url + "?pageNo=" + $prePage + "&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=" + $prePage + "&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 	//上上页
 	function pre2Page(){
 		var $pre2Page = ${pageNo}-2;
-		window.location.href = $url + "?pageNo=" + $pre2Page + "&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=" + $pre2Page + "&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 	//当前页
 	function currPage(){
-		window.location.href = $url + "?pageNo=" + $pageNo + "&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=" + $pageNo + "&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 	//下页
 	function nextPage(){
 		var $nextPage = ${pageNo}+1;
-		window.location.href = $url + "?pageNo=" + $nextPage + "&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=" + $nextPage + "&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 	//下下页
 	function next2Page(){
 		var $next2Page = ${pageNo}+2;
-		window.location.href = $url + "?pageNo=" + $next2Page + "&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=" + $next2Page + "&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 	//尾页
 	function lastPage(){
-		window.location.href = $url + "?pageNo=" + pages + "&pageSize=" + $pageSize;
+		window.location.href = $url + "?pageNo=" + pages + "&pageSize=" + $pageSize+"&content="
+		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+isHabit+"&isComplete="+isComplete;
 	};
 </script>
 </html>

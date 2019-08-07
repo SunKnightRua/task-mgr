@@ -38,8 +38,10 @@ public class TaskController {
 	 * @return 获取所有任务
 	 */
 	@RequestMapping("/getAllTasks")
-	public String getAllTasks(Model model,@Param("pageNo")int pageNo,@Param("pageSize")int pageSize) {
-		List<Task> allTasks = taskService.getAllTasks(pageNo, pageSize);
+	public String getAllTasks(Model model,@RequestParam("pageNo")int pageNo, @RequestParam("pageSize")int pageSize, 
+			@RequestParam("content")String content, @RequestParam("desc")String desc, 
+			@RequestParam("priority")byte priority, @RequestParam("isHabit") byte isHabit, @RequestParam("isComplete")byte isComplete) {
+		List<Task> allTasks = taskService.getAllTasks(pageNo, pageSize, content, desc, priority, isHabit, isComplete);
 		List<Task> tasks = new ArrayList<Task>();
 		for (Task task : allTasks) {
 			tasks.add(task);

@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 	<script type="text/javascript">
-		window.location.href = "/task-mgr/task/getAllTasks";
+		window.location.href ="localhost:8080/task-mgr/task/getAllTasks?pageNo=1&pageSize=5&content=&desc=&priority=&isHabit=&isComplete=";
 	</script>
 <body>
 

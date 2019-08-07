@@ -9,9 +9,14 @@ public interface TaskService {
 	
 	/**
 	 * 查找所有任务
+	 * @param isComplete 
+	 * @param isHabit 
+	 * @param priority 
+	 * @param desc 
+	 * @param content 
 	 * @return 所有任务
 	 */
-	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize);
+	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, byte priority, byte isHabit, byte isComplete);
 
 	/**
 	 * 查找所有任务总数量
