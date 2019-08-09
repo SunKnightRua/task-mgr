@@ -5,6 +5,7 @@
 <title>任务列表</title>
 </head>
 <script src="/task-mgr/js/jquery-1.11.0.min.js"></script>
+
 <script type="text/javascript">
 /*  
 	//获取完成任务数/总任务数
@@ -57,6 +58,7 @@
 			<td align="center" width="10%">创建时间</td>
 			<td align="center" width="10%">更新时间</td>
 			<td align="center" width="5%">已完成</td>
+			<td align="center" width="5%">已删除</td>
 		</tr>
 		#foreach($!task in $!tasks)
 		<tr>
@@ -91,7 +93,7 @@
 			##预期开始时间
 				$!dateTool.format('HH:mm',$!timeExpected.beginTimeExpected)-
 			##预期结束时间
-			$!dateTool.format('HH:mm',$!timeExpected.endTimeExpected)</br>
+			$!dateTool.format('HH:mm',$!timeExpected.endTimeExpected)<br/>
 			#end
 			</td> 
 			
@@ -100,7 +102,7 @@
 			##实际开始时间
 			$!dateTool.format('HH:mm',$!timeActual.beginTimeActual)-
 			##实际结束时间
-			$!dateTool.format('HH:mm',$!timeActual.endTimeActual)</br>
+			$!dateTool.format('HH:mm',$!timeActual.endTimeActual)<br/>
 			#end
 			</td> 
 			
@@ -111,7 +113,16 @@
 			<td align="center">
 			#if($!task.isComplete == 0)
 			否
-			#elseif($!task.isHabit == 1)
+			#elseif($!task.isComplete == 1)
+			是
+			#end
+			</td>
+			
+			##已删除
+			<td align="center">
+			#if($!task.isDelete == 0)
+			否
+			#elseif($!task.isDelete == 1)
 			是
 			#end
 			</td>
@@ -131,9 +142,8 @@
 	<tr>
 		<td align="left"><input type="text" name="content" id="searTabContent"></td>
 		<td align="left"><input type="text"  name="desc" id="searTabDesc"></td>
-		<td align="left">
-			<select  name="priority" id="searTabPriority">
-				<option value=""></option>
+		<td align="left"> <select  name="priority" id="searTabPriority">
+				<option value="">所有优先级</option>
 				<option value="1">重要紧急</option>
 				<option value="2">重要不紧急</option>
 				<option value="3">不重要紧急</option>
@@ -142,14 +152,14 @@
 		</td>
 		<td align="left">
 			<select  name="isHabit" id="searTabIsHabit">
-				<option value=""></option>
+				<option value="">全选</option>
 				<option value="0">否</option>
 				<option value="1">是</option>
 			</select>
 		</td>
 		<td align="left" >
 			<select  name="isComplete" id="searTabIsComplete">
-				<option value=""></option>
+				<option value="">全选</option>
 				<option value="0">否</option>
 				<option value="1">是</option>
 			</select>
@@ -212,74 +222,131 @@
 <script type="text/javascript">
 	//获取URL
 	var $url = location.href;
-	var content = document.getElementById("searTabContent").value;
-	var desc = document.getElementById("searTabDesc").value;
-	var priority = document.getElementById("searTabPriority").value;
-	var isHabit = document.getElementById("searTabIsHabit").value;
-	var isComplete = document.getElementById("searTabIsComplete").value;
 	$url = $url.split("?", 1)[0];
-	var pages =document.getElementById("pages").innerHTML;
+	var pages;
+	var content;
+	var desc;
+	var priority;
+	var isHabit;
+	var isComplete;
 	//搜索方法
 	function search(){
-		window.location.href = $url+"?pageNo="+pages+"&pageSize="+$pageSize+"&content="
-				+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
+		window.location.href = $url+"?pageNo=1&pageSize="+$pageSize+"&content="
+				+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 				+isHabit+"&isComplete="+isComplete;
-	}
+	};
 	//分页方法
 	//跳转到指定页码
-	function jump(){
+	function jump(){ 
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		var $targetPage = document.getElementById("index").value;
 		if($targetPage != null && $targetPage>0 && $targetPage<=pages){//有输入值，并且输入值在1到总页数之间才跳转。
 			window.location.href = $url + "?pageNo=" + $targetPage + "&pageSize=" + $pageSize+"&content="
-			+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+			+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 			+isHabit+"&isComplete="+isComplete;
 		}
 	};
 	//首页
 	function firstPage(){
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		window.location.href = $url + "?pageNo=1&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//上页
 	function prePage(){
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		var $prePage = ${pageNo}-1;
 		window.location.href = $url + "?pageNo=" + $prePage + "&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//上上页
 	function pre2Page(){
 		var $pre2Page = ${pageNo}-2;
 		window.location.href = $url + "?pageNo=" + $pre2Page + "&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//当前页
 	function currPage(){
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		window.location.href = $url + "?pageNo=" + $pageNo + "&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//下页
 	function nextPage(){
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		var $nextPage = ${pageNo}+1;
 		window.location.href = $url + "?pageNo=" + $nextPage + "&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//下下页
 	function next2Page(){
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		var $next2Page = ${pageNo}+2;
 		window.location.href = $url + "?pageNo=" + $next2Page + "&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//尾页
 	function lastPage(){
+		pages =document.getElementById("pages").innerHTML;
+		content = document.getElementById("searTabContent").value;
+		desc = document.getElementById("searTabDesc").value;
+		priority = document.getElementById("searTabPriority").value;
+		isHabit = document.getElementById("searTabIsHabit").value;
+		isComplete = document.getElementById("searTabIsComplete").value;
 		window.location.href = $url + "?pageNo=" + pages + "&pageSize=" + $pageSize+"&content="
-		+content+"&desc="+desc+"&priority="+priority+"&isHabit="
+		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
 		+isHabit+"&isComplete="+isComplete;
 	};
+</script>
+
+<script type="text/javascript">
+//搜索框默认值
+	$("#searTabContent").val('$!searTabContent');
+	$("#searTabDesc").val('$!searTabDesc');
+	$("#searTabPriority").val('$!searTabPriority');
+	$("#searTabIsHabit").val('$!searTabIsHabit');
+	$("#searTabIsComplete").val('$!searTabIsComplete');
 </script>
 </html>

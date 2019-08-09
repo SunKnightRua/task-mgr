@@ -1,5 +1,6 @@
 package cn.sun.tasks.task.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,9 +39,27 @@ public class TaskController {
 	 * @return 获取所有任务
 	 */
 	@RequestMapping("/getAllTasks")
-	public String getAllTasks(Model model,@RequestParam("pageNo")int pageNo, @RequestParam("pageSize")int pageSize, 
-			@RequestParam("content")String content, @RequestParam("desc")String desc, 
-			@RequestParam("priority")byte priority, @RequestParam("isHabit") byte isHabit, @RequestParam("isComplete")byte isComplete) {
+	public String getAllTasks(Model model, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize,
+			@RequestParam("content") String content, @RequestParam("desc") String desc,
+			@RequestParam("priority") Byte priority, @RequestParam("isHabit") Byte isHabit,
+			@RequestParam("isComplete") Byte isComplete) {
+		//对中文参数进行解码
+		try {
+			content =new String(content.getBytes("ISO8859-1"),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		try {
+			desc=new String(desc.getBytes("ISO8859-1"),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("searTabContent", content);
+		model.addAttribute("searTabDesc", desc);
+		model.addAttribute("searTabPriority", priority);
+		model.addAttribute("searTabIsHabit", isHabit);
+		model.addAttribute("searTabIsComplete", isComplete);
 		List<Task> allTasks = taskService.getAllTasks(pageNo, pageSize, content, desc, priority, isHabit, isComplete);
 		List<Task> tasks = new ArrayList<Task>();
 		for (Task task : allTasks) {
@@ -49,7 +68,6 @@ public class TaskController {
 		model.addAttribute("tasks", tasks);
 		int totalCount = taskService.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
 		model.addAttribute("totalCount", totalCount);
-		model.addAttribute("pageNo", pageNo);
 		return "taskList.vm";
 	}
 
@@ -157,9 +175,9 @@ public class TaskController {
 	 * @return 已完成任务
 	 */
 	@RequestMapping("/getCompletedTasks")
-	public String getCompletedTasks(Model model) {
-		// List<Task> tasks = taskService.getCompletedTasks();
-		// model.addAttribute("tasks", tasks);
+	public String getCompletedTasks(Model model, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize) {
+		List<Task> tasks = taskService.getCompletedTasks(pageNo, pageSize);
+		model.addAttribute("tasks", tasks);
 		return "taskList.vm";
 	}
 
@@ -189,26 +207,18 @@ public class TaskController {
 		return "taskList.vm";
 	}
 
-	/**
-	 * 当前任务
-	 * 
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/getPresentTasks")
-	public String getPresentTasks(Model model) {
-		// List<Task> tasks = taskService.getPresentTasks();
-		// model.addAttribute("tasks", tasks);
-		return "taskList.vm";
-	}
-
-	// 根据优先级查询任务
-	@RequestMapping("/getTasksByPriority")
-	public String getTasksByPriority(Model model, Integer priority) {
-		// List<Task> tasks = taskService.getTasksByPriority(priority);
-		// model.addAttribute("tasks", tasks);
-		return "taskList.vm";
-	}
+//	/**
+//	 * 当前任务
+//	 * 
+//	 * @param model
+//	 * @return
+//	 */
+//	@RequestMapping("/getPresentTasks")
+//	public String getPresentTasks(Model model) {
+//		// List<Task> tasks = taskService.getPresentTasks();
+//		// model.addAttribute("tasks", tasks);
+//		return "taskList.vm";
+//	}
 
 	/**
 	 * 任务完成度

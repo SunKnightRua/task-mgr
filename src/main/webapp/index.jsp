@@ -6,9 +6,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
-	<script type="text/javascript">
-		window.location.href ="localhost:8080/task-mgr/task/getAllTasks?pageNo=1&pageSize=5&content=&desc=&priority=&isHabit=&isComplete=";
-	</script>
+<script type="text/javascript">
+	window.location.href ="${pageContext.request.contextPath}/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
+</script>
 <body>
 
 </body>

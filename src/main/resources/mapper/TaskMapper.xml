@@ -47,25 +47,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			t.is_delete
 		FROM
 			t_task t
-		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} IS NULL )
-		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} IS NULL )
-		AND t.priority = #{priority} 
-		AND t.is_habit = #{isHabit} 
-		AND t.is_complete = #{isComplete} 
+		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} = '' )
+		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} = '' )
+		AND (t.priority = #{priority} OR #{priority} IS NULL )
+		AND (t.is_habit = #{isHabit} OR #{isHabit} IS NULL )
+		AND (t.is_complete = #{isComplete} OR #{isComplete} IS NULL )
 		LIMIT #{start}, #{offset}
 	</select>
 
 	<!-- 查询所有任务总数量TotalCount -->
 	<select id="getAllTasksTotalCount" resultType="int">
 		SELECT
-			count( * ) 
+			count(t.id) 
 		FROM
 			t_task t
 		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} IS NULL )
 		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} IS NULL )
-		AND t.priority = #{priority}
-		AND t.is_habit = #{isHabit} 
-		AND t.is_complete = #{isComplete} 
+		AND (t.priority = #{priority} OR #{priority} IS NULL )
+		AND (t.is_habit = #{isHabit} OR #{isHabit} IS NULL )
+		AND (t.is_complete = #{isComplete} OR #{isComplete} IS NULL )
 	</select>
 
 	<!-- 根据id查询任务 -->
@@ -86,7 +86,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 		t.id = #{id}
 	</select>
-
 
 	<!-- 添加任务 -->
 	<insert id="insertTask" parameterType="cn.sun.tasks.task.domain.Task"
@@ -109,8 +108,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 
-
 	<!-- 更新任务 -->
+<!--  
 	<update id="updateTask" parameterType="cn.sun.tasks.task.domain.Task">
 		UPDATE t_task
 		SET content = #{content},
@@ -121,8 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 		id = #{id}
 	</update>
-
-
+-->
 	<!-- 删除任务 -->
 	<update id="deleteTask" parameterType="Integer">
 		UPDATE t_task
@@ -132,4 +130,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		id = #{id}
 	</update>
 
+	<!-- 查询已完成任务 -->
+	<select id="getCompletedTasks" resultMap="taskMap">
+		SELECT
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete 
+		FROM
+			t_task t 
+		WHERE
+			t.is_complete = 1 
+			AND t.is_delete =0
+			LIMIT #{start},#{offset}
+	</select>
+	<!-- 查询已完成任务数量 -->
+	<select id="getCompletedTasksTotalCount" resultType="int">
+		SELECT
+			count(t.id) 
+		FROM
+			t_task t
+		WHERE
+			t.is_complete = 1 
+			AND t.is_delete =0
+	</select>
 </mapper>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script type="text/javascript" src='/task-mgr/js/task.js'></script>
 <meta charset="UTF-8">
 <title>添加任务</title>
 </head>
@@ -9,7 +10,7 @@
 <form action="/task-mgr/task/addTask" method="post">
 	<table border="1" width="80%" align="center">
 		<thead>
-			<th colspan="9" align="center">添加列表</th>
+			<th align="center">添加列表</th>
 		</thead>
 		<tr>
 			<td align="center" width="7%">任务</td>

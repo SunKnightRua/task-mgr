@@ -8,7 +8,6 @@ public interface TaskService {
 
 	/**
 	 * 查找所有任务
-	 * 
 	 * @param isComplete
 	 * @param isHabit
 	 * @param priority
@@ -16,38 +15,26 @@ public interface TaskService {
 	 * @param content
 	 * @return 所有任务
 	 */
-	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, byte priority,
-			byte isHabit, byte isComplete);
+	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, Byte priority,
+			Byte isHabit, Byte isComplete);
 
 	/**
 	 * 查找所有任务总数量
-	 * 
 	 * @return 所有任务总数量
 	 */
-	public abstract int getAllTasksTotalCount(String content, String desc, byte priority, byte isHabit,
-			byte isComplete);
+	public abstract int getAllTasksTotalCount(String content, String desc, Byte priority, Byte isHabit,
+			Byte isComplete);
 
 	/**
 	 * 根据id查找任务
-	 * 
-	 * @param id
-	 *            任务对应的id
+	 * @param id 任务对应的id
 	 * @return 目标任务
 	 */
 	public abstract Task getTaskById(Integer id);
 
-	// /**
-	// * 根据id的集合查找任务
-	// * @param list id的集合
-	// * @return 目标任务的集合
-	// */
-	// public List<Task> getTaskByIds(List<Integer> ids);
-	//
 	/**
 	 * 插入一条任务
-	 * 
-	 * @param task
-	 *            任务信息
+	 * @param task任务信息
 	 */
 	public void addTask(Task task);
 
@@ -58,18 +45,25 @@ public interface TaskService {
 	// */
 	// public void updateTask(Task task);
 	//
-	// /**
-	// * 根据id删除一条任务
-	// * @param id 浠诲姟id
-	// */
-	// public void deleteTask(Integer id);
-	//
-	// /**
-	// * 查找已完成任务
-	// * @return 已完成任务
-	// */
-	// public List<Task> getCompletedTasks();
-	//
+	/**
+	 * 根据id删除一条任务
+	 * @param id任务id
+	 */
+	public void deleteTask(Integer id);
+
+	/**
+	 * 查找已完成任务
+	 * 
+	 * @return 已完成任务
+	 */
+	public List<Task> getCompletedTasks(Integer pageNo,Integer pageSize);
+
+	/**
+	 * 查找已完成任务总数
+	 * @return已完成任务总数
+	 */
+	public int getCompletedTasksTotalCount();
+
 	// /**
 	// * 查找逾期任务
 	// * @return 逾期任务

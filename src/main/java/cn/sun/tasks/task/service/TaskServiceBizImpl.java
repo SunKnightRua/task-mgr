@@ -1,5 +1,6 @@
 package cn.sun.tasks.task.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +25,21 @@ public class TaskServiceBizImpl implements TaskService {
 
 	// 获取所有任务
 	@Override
-	public List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, byte priority,
-			byte isHabit, byte isComplete) {
-		List<Task> allTasks = taskDao.getAllTasks((pageNo - 1) * pageSize, pageSize, content, desc, priority, isHabit, isComplete);
-		for (Task task : allTasks) {
-			List<TimeExpected> timeExpecteds = timeExpectedDao.getTimeExpectedsByTaskId(task.getId());
-			task.setTimeExpecteds(timeExpecteds);
-		}
-		for (Task task : allTasks) {
-			List<TimeActual> timeActuals = timeActualDao.getTimeActualsByTaskId(task.getId());
-			task.setTimeActuals(timeActuals);
-		}
+	public List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, Byte priority,
+			Byte isHabit, Byte isComplete) {
+		List<Task> allTasks = taskDao.getAllTasks((pageNo - 1) * pageSize, pageSize, content, desc, priority, isHabit,
+				isComplete);
+		this.setIimeExpectedsAndTimeActuals(allTasks);
 		return allTasks;
 	}
 
+	
+
+
+
 	// 获取所有任务总数量
 	@Override
-	public int getAllTasksTotalCount(String content, String desc, byte priority, byte isHabit, byte isComplete) {
+	public int getAllTasksTotalCount(String content, String desc, Byte priority, Byte isHabit, Byte isComplete) {
 		return taskDao.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
 	}
 
@@ -55,18 +54,6 @@ public class TaskServiceBizImpl implements TaskService {
 		return task;
 	}
 
-	// //根据ids查询任务
-	// @Override
-	// public List<Task> getTaskByIds(List<Integer> ids) {
-	// List<Task> taskList = new ArrayList<Task>();
-	// if (ids != null) {
-	// for (Integer id : ids) {
-	// taskList.add(taskDao.getTaskById(id));
-	// }
-	// }
-	// return taskList;
-	// }
-	//
 	// // 待办任务
 	// @Override
 	// public List<Task> getTodos() {
@@ -116,21 +103,7 @@ public class TaskServiceBizImpl implements TaskService {
 	// return presentTasks;
 	// }
 	//
-	// // 根据优先级查询任务
-	// @Override
-	// public List<Task> getTasksByPriority(Integer priority) {
-	// List<Task> taskList = new ArrayList<>();
-	// // 获取所有任务，将符合条件的任务添加进taskList
-	// List<Task> allTasks = taskDao.getAllTasks();
-	// for (Task task : allTasks) {
-	// if (task.getIsDelete() != 1 && task.getIsComplete() != 1 && priority ==
-	// task.getPriority()) {
-	// taskList.add(task);
-	// }
-	// }
-	//
-	// return taskList;
-	// }
+
 	//
 	// // 逾期任务
 	// @Override
@@ -207,25 +180,26 @@ public class TaskServiceBizImpl implements TaskService {
 	// }
 	// }
 	//
-	// // 删除任务
-	// @Override
-	// public void deleteTask(Integer id) {
-	// taskDao.deleteTask(id);
-	// }
-	//
-	// // 查询已完成任务
-	// @Override
-	// public List<Task> getCompletedTasks() {
-	// List<Task> completedTasks = new ArrayList<>();
-	// List<Task> allTasks = taskDao.getAllTasks();
-	// for (Task task : allTasks) {
-	// if (task.getIsComplete() == 1 && task.getIsDelete() != 1) {
-	// completedTasks.add(task);
-	// }
-	// }
-	// return completedTasks;
-	// }
-	//
+	// 删除任务
+	@Override
+	public void deleteTask(Integer id) {
+		taskDao.deleteTask(id);
+	}
+
+	// 查询已完成任务
+	@Override
+	public List<Task> getCompletedTasks(Integer pageNo, Integer pageSize) {
+		List<Task> completedTasks = taskDao.getCompletedTasks((pageNo - 1) * pageSize, pageSize);
+		this.setIimeExpectedsAndTimeActuals(completedTasks);
+		return completedTasks;
+	}
+
+	// 查询已完成任务数量
+	@Override
+	public int getCompletedTasksTotalCount() {
+		return taskDao.getCompletedTasksTotalCount();
+	}
+
 	// @Override
 	// public double getPercentOfCompletedTasks() {
 	// Double percentOfCompletedTasks = new Double(0);
@@ -240,4 +214,19 @@ public class TaskServiceBizImpl implements TaskService {
 	// }
 	// return percentOfCompletedTasks;
 	// }
+	
+	/**
+	 * 为查询的Task结果查询timeExpecteds和timeActuals
+	 * @param allTasks目标任务集合
+	 */
+	private void setIimeExpectedsAndTimeActuals(List<Task> taskList) {
+		for (Task task : taskList) {
+			List<TimeExpected> timeExpecteds = timeExpectedDao.getTimeExpectedsByTaskId(task.getId());
+			task.setTimeExpecteds(timeExpecteds);
+		}
+		for (Task task : taskList) {
+			List<TimeActual> timeActuals = timeActualDao.getTimeActualsByTaskId(task.getId());
+			task.setTimeActuals(timeActuals);
+		}
+	}
 }
