@@ -43,14 +43,14 @@ public class TaskController {
 			@RequestParam("content") String content, @RequestParam("desc") String desc,
 			@RequestParam("priority") Byte priority, @RequestParam("isHabit") Byte isHabit,
 			@RequestParam("isComplete") Byte isComplete) {
-		//对中文参数进行解码
+		// 对中文参数进行解码
 		try {
-			content =new String(content.getBytes("ISO8859-1"),"UTF-8");
+			content = new String(content.getBytes("ISO8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		try {
-			desc=new String(desc.getBytes("ISO8859-1"),"UTF-8");
+			desc = new String(desc.getBytes("ISO8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -178,6 +178,9 @@ public class TaskController {
 	public String getCompletedTasks(Model model, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize) {
 		List<Task> tasks = taskService.getCompletedTasks(pageNo, pageSize);
 		model.addAttribute("tasks", tasks);
+		int totalCount = taskService.getCompletedTasksTotalCount();
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("pageNo", pageNo);
 		return "taskList.vm";
 	}
 
@@ -188,9 +191,12 @@ public class TaskController {
 	 * @return 逾期任务
 	 */
 	@RequestMapping("/getOverdueTasks")
-	public String getOverdueTasks(Model model) {
-		// List<Task> tasks = taskService.getOverdueTasks();
-		// model.addAttribute("tasks", tasks);
+	public String getOverdueTasks(Model model, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize) {
+		List<Task> tasks = taskService.getOverdueTasks(pageNo, pageSize);
+		model.addAttribute("tasks", tasks);
+		int totalCount = taskService.getOverdueTasksTotalCount();
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("pageNo", pageNo);
 		return "taskList.vm";
 	}
 
@@ -201,24 +207,30 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping("/getTodos")
-	public String getTodos(Model model) {
-		// List<Task> tasks = taskService.getTodos();
-		// model.addAttribute("tasks", tasks);
+	public String getTodos(Model model, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize) {
+		List<Task> tasks = taskService.getTodos(pageNo, pageSize);
+		model.addAttribute("tasks", tasks);
+		int totalCount = taskService.getTodosTotalCount();
+		model.addAttribute("totalCount", totalCount);		
+		model.addAttribute("pageNo", pageNo);
 		return "taskList.vm";
 	}
 
-//	/**
-//	 * 当前任务
-//	 * 
-//	 * @param model
-//	 * @return
-//	 */
-//	@RequestMapping("/getPresentTasks")
-//	public String getPresentTasks(Model model) {
-//		// List<Task> tasks = taskService.getPresentTasks();
-//		// model.addAttribute("tasks", tasks);
-//		return "taskList.vm";
-//	}
+	/**
+	 * 当前任务
+	 *
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/getPresentTasks")
+	public String getPresentTasks(Model model, @Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize) {
+		List<Task> tasks = taskService.getPresentTasks(pageNo, pageSize);
+		model.addAttribute("tasks", tasks);
+		int totalCount = taskService.getPresentTasksTotalCount();
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("pageNo", pageNo);
+		return "taskList.vm";
+	}
 
 	/**
 	 * 任务完成度

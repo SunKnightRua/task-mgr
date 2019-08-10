@@ -91,18 +91,18 @@
 			<td align="left">
 			#foreach($!timeExpected in $!task.timeExpecteds)
 			##预期开始时间
-				$!dateTool.format('HH:mm',$!timeExpected.beginTimeExpected)-
+				$!dateTool.format('yyyy-MM-dd HH:mm',$!timeExpected.beginTimeExpected)-
 			##预期结束时间
-			$!dateTool.format('HH:mm',$!timeExpected.endTimeExpected)<br/>
+			$!dateTool.format('yyyy-MM-dd HH:mm',$!timeExpected.endTimeExpected)<br/>
 			#end
 			</td> 
 			
 			<td align="left">
 			#foreach($!timeActual in $!task.timeActuals)
 			##实际开始时间
-			$!dateTool.format('HH:mm',$!timeActual.beginTimeActual)-
+			$!dateTool.format('yyyy-MM-dd HH:mm',$!timeActual.beginTimeActual)-
 			##实际结束时间
-			$!dateTool.format('HH:mm',$!timeActual.endTimeActual)<br/>
+			$!dateTool.format('yyyy-MM-dd HH:mm',$!timeActual.endTimeActual)<br/>
 			#end
 			</td> 
 			

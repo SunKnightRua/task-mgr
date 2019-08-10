@@ -61,8 +61,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			count(t.id) 
 		FROM
 			t_task t
-		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} IS NULL )
-		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} IS NULL )
+		WHERE (t.content LIKE CONCAT('%',#{content},'%') OR #{content} = '' )
+		AND (t.`desc` LIKE CONCAT('%',#{desc},'%') OR #{desc} = '' )
 		AND (t.priority = #{priority} OR #{priority} IS NULL )
 		AND (t.is_habit = #{isHabit} OR #{isHabit} IS NULL )
 		AND (t.is_complete = #{isComplete} OR #{isComplete} IS NULL )
@@ -159,5 +159,280 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 			t.is_complete = 1 
 			AND t.is_delete =0
+	</select>
+	
+	<!-- 查询待办任务 -->
+	<select id="getTodos" resultMap="taskMap">
+		SELECT
+			a.id,
+			a.content,
+			a.`desc`,
+			a.is_habit,
+			a.create_time,
+			a.update_time,
+			a.delete_time,
+			a.is_complete,
+			a.is_delete 
+		FROM
+			(
+			SELECT
+				t.id,
+				t.content,
+				t.`desc`,
+				t.is_habit,
+				t.create_time,
+				t.update_time,
+				t.delete_time,
+				t.is_complete,
+				t.is_delete 
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			GROUP BY
+				te.task_id 
+			HAVING
+				UNIX_TIMESTAMP( NOW( ) ) &lt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) 
+				OR max( te.end_time_expected ) IS NULL 
+			) AS a
+			CROSS JOIN (
+			SELECT
+				t.id,
+				t.content,
+				t.`desc`,
+				t.is_habit,
+				t.create_time,
+				t.update_time,
+				t.delete_time,
+				t.is_complete,
+				t.is_delete 
+			FROM
+				t_task t
+				LEFT JOIN t_time_actual ta ON t.id = ta.task_id 
+			WHERE
+				ta.begin_time_actual IS NULL 
+				AND t.is_complete = 0 
+				AND t.is_delete = 0 
+			) AS b ON a.id = b.id 
+			LIMIT #{start},#{offset}
+	</select>
+	<!-- 查询待办任务总数 -->
+	<select id="getTodosTotalCount" resultType="int">
+		SELECT
+			count( a.id ) 
+		FROM
+			(
+			SELECT
+				t.id 
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			GROUP BY
+				te.task_id 
+			HAVING
+				UNIX_TIMESTAMP( NOW( ) ) &lt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) 
+				OR max( te.end_time_expected ) IS NULL 
+			) AS a
+			CROSS JOIN (
+			SELECT
+				t.id 
+			FROM
+				t_task t
+				LEFT JOIN t_time_actual ta ON t.id = ta.task_id 
+			WHERE
+				ta.begin_time_actual IS NULL 
+				AND t.is_complete = 0 
+			AND t.is_delete = 0 
+			) AS b ON a.id = b.id
+	</select>
+	
+	<!-- 查询当前任务 -->
+	<select id="getPresentTasks" resultMap="taskMap">
+		SELECT
+			a.id,
+			a.content,
+			a.`desc`,
+			a.is_habit,
+			a.create_time,
+			a.update_time,
+			a.delete_time,
+			a.is_complete,
+			a.is_delete 
+		
+		FROM
+			(
+			SELECT
+				t.id,
+				t.content,
+				t.`desc`,
+				t.is_habit,
+				t.create_time,
+				t.update_time,
+				t.delete_time,
+				t.is_complete,
+				t.is_delete 
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			GROUP BY
+				te.task_id 
+			HAVING
+				UNIX_TIMESTAMP( NOW( ) ) &lt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) UNION
+			SELECT
+				t.id,
+				t.content,
+				t.`desc`,
+				t.is_habit,
+				t.create_time,
+				t.update_time,
+				t.delete_time,
+				t.is_complete,
+				t.is_delete 
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			WHERE
+				te.begin_time_expected IS NULL
+			) AS a
+			JOIN (
+			SELECT
+				t.id,
+				t.content,
+				t.`desc`,
+				t.is_habit,
+				t.create_time,
+				t.update_time,
+				t.delete_time,
+				t.is_complete,
+				t.is_delete 
+			FROM
+				t_task t
+				LEFT JOIN t_time_actual ta ON t.id = ta.task_id 
+			WHERE
+				ta.begin_time_actual IS NOT NULL 
+				AND t.is_complete = 0 
+				AND t.is_delete = 0 
+			GROUP BY
+			ta.task_id 
+			) AS b ON a.id = b.id
+			LIMIT #{start},#{offset}
+	</select>
+	<!-- 查询当前任务总数 -->
+	<select id="getPresentTasksTotalCount" resultType="int">
+		SELECT
+			count(a.id)
+		FROM
+			(
+			SELECT
+				t.id
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			GROUP BY
+				te.task_id 
+			HAVING
+				UNIX_TIMESTAMP( NOW( ) ) &lt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) UNION
+			SELECT
+				t.id
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			WHERE
+				te.begin_time_expected IS NULL
+			) AS a
+			JOIN (
+			SELECT
+				t.id
+			FROM
+				t_task t
+				LEFT JOIN t_time_actual ta ON t.id = ta.task_id 
+			WHERE
+				ta.begin_time_actual IS NOT NULL 
+				AND t.is_complete = 0 
+			GROUP BY
+			ta.task_id 
+			) AS b ON a.id = b.id
+	</select>
+	
+	<!-- 查询逾期任务 -->
+	<select id="getOverdueTasks" resultMap="taskMap">
+		SELECT
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete 
+		FROM
+			t_task t
+			LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+			LEFT JOIN t_time_expected te ON t.id = te.task_id 
+		WHERE
+			t.is_complete = 1 
+			AND t.is_delete = 0 
+		GROUP BY
+			ta.task_id,
+			te.task_id 
+		HAVING
+			UNIX_TIMESTAMP( max( ta.end_time_actual ) ) &gt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) UNION
+		SELECT
+			t.id,
+			t.content,
+			t.`desc`,
+			t.priority,
+			t.is_habit,
+			t.create_time,
+			t.update_time,
+			t.delete_time,
+			t.is_complete,
+			t.is_delete 
+		FROM
+			t_task t
+			LEFT JOIN t_time_expected te ON t.id = te.task_id 
+		WHERE
+			t.is_complete = 0 
+			AND t.is_delete = 0 
+		GROUP BY
+			te.task_id 
+		HAVING
+			UNIX_TIMESTAMP( NOW( ) ) &gt; UNIX_TIMESTAMP( max( te.end_time_expected ) )
+			LIMIT #{start},#{offset}
+	</select>
+	<!-- 查询逾期任务 总数-->
+	<select id="getOverdueTasksTotalCount" resultType="int">
+		SELECT
+			count(a.id)
+		FROM
+			(
+			SELECT
+				t.id 
+			FROM
+				t_task t
+				LEFT JOIN t_time_actual ta ON t.id = ta.task_id
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			WHERE
+				t.is_complete = 1 
+				AND t.is_delete = 0 
+			GROUP BY
+				ta.task_id,
+				te.task_id 
+			HAVING
+				UNIX_TIMESTAMP( max( ta.end_time_actual ) ) &gt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) UNION
+			SELECT
+				t.id 
+			FROM
+				t_task t
+				LEFT JOIN t_time_expected te ON t.id = te.task_id 
+			WHERE
+				t.is_complete = 0 
+				AND t.is_delete = 0 
+			GROUP BY
+				te.task_id 
+			HAVING
+			UNIX_TIMESTAMP( NOW( ) ) &gt; UNIX_TIMESTAMP( max( te.end_time_expected ) ) 
+			) as a
 	</select>
 </mapper>

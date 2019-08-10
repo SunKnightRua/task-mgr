@@ -7,7 +7,7 @@ import cn.sun.tasks.timeactual.domain.TimeActual;
 public interface TimeActualService {
 	
 	/**
-	 * 查找所有实际时间
+	 * 查询所有实际时间
 	 * @return 所有实际时间
 	 */
 	public List<TimeActual> selectAll();

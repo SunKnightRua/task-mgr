@@ -1,8 +1,10 @@
 package cn.sun.tasks.task.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +35,6 @@ public class TaskServiceBizImpl implements TaskService {
 		return allTasks;
 	}
 
-	
-
-
-
 	// 获取所有任务总数量
 	@Override
 	public int getAllTasksTotalCount(String content, String desc, Byte priority, Byte isHabit, Byte isComplete) {
@@ -54,92 +52,44 @@ public class TaskServiceBizImpl implements TaskService {
 		return task;
 	}
 
-	// // 待办任务
-	// @Override
-	// public List<Task> getTodos() {
-	// List<Task> todos = new ArrayList<>();
-	// // 获取所有任务，将符合条件的任务添加进todos
-	// List<Task> allTasks = taskDao.getAllTasks();
-	// // 获取当前时间
-	// Date curtime = new Date();
-	// for (Task task : allTasks) {
-	// if (task.getIsDelete() != 1 && task.getIsComplete() != 1) {
-	// // 实际开始时间为空
-	// if (task.getTimeActuals().size() == 0) {
-	// List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
-	// // 当前时间小于最大期望完成时间
-	// if (MyTimeUtils.getMinEndTimeExpected(timeExpecteds) != null
-	// && curtime.before(MyTimeUtils.getMinBeginTimeExpected(timeExpecteds))) {
-	// todos.add(task);
-	// }
-	// }
-	// }
-	// }
-	// return todos;
-	// }
-	//
-	// // 当前任务
-	// @Override
-	// public List<Task> getPresentTasks() {
-	// List<Task> presentTasks = new ArrayList<>();
-	// // 获取所有任务，将符合条件的任务添加进presentTasks
-	// List<Task> allTasks = taskDao.getAllTasks();
-	// // 获取当前系统时间
-	// Date curtime = new Date();
-	// for (Task task : allTasks) {
-	// if (task.getIsDelete() != 1 && task.getIsComplete() != 1) {
-	// // 实际开始时间不为空
-	// if (task.getTimeActuals().size() != 0) {
-	// List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
-	// // 当前时间<最大期望完成时间
-	// if (MyTimeUtils.getMaxEndTimeExpected(timeExpecteds) != null
-	// && curtime.before(MyTimeUtils.getMaxEndTimeExpected(timeExpecteds))) {
-	// presentTasks.add(task);
-	// }
-	// }
-	// }
-	// }
-	//
-	// return presentTasks;
-	// }
-	//
+	// 待办任务
+	@Override
+	public List<Task> getTodos(Integer pageNo, Integer pageSize) {
+		List<Task> todos = taskDao.getTodos((pageNo-1)*pageSize, pageSize);
+		this.setIimeExpectedsAndTimeActuals(todos);
+		return todos;
+	}
+	//待办任务总数
+	@Override
+	public int getTodosTotalCount() {
+		return taskDao.getTodosTotalCount();
+	}
 
-	//
-	// // 逾期任务
-	// @Override
-	// public List<Task> getOverdueTasks() {
-	// List<Task> overdueTasks = new ArrayList<>();
-	// // 获取所有任务，将符合条件的任务添加进overdueTasks
-	// List<Task> allTasks = taskDao.getAllTasks();
-	// // 获取当前时间
-	// Date curtime = new Date();
-	// for (Task task : allTasks) {
-	// if (task.getIsDelete() != 1) {
-	// if (task.getIsComplete() == 1) {
-	// // 1.已完成
-	// // 最大实际完成时间>最大期望完成时间
-	// Date maxEndTimeActual =
-	// MyTimeUtils.getMaxEndTimeActual(task.getTimeActuals());
-	// if (maxEndTimeActual != null
-	// &&
-	// maxEndTimeActual.after(MyTimeUtils.getMaxEndTimeExpected(task.getTimeExpecteds())))
-	// {
-	// overdueTasks.add(task);
-	// }
-	// } else {
-	// // 2.未完成
-	// // 当前系统时间>最大期望完成时间
-	// if(curtime.after(MyTimeUtils.getMaxEndTimeExpected(task.getTimeExpecteds())))
-	// {
-	// overdueTasks.add(task);
-	// }
-	// }
-	// }
-	// }
-	//
-	// return overdueTasks;
-	// }
-	//
+	// 当前任务
+	@Override
+	public List<Task> getPresentTasks(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize) {
+		return taskDao.getPresentTasks((pageNo-1)*pageSize, pageSize);
+	}
+
+	//当前任务总数
+	public int getPresentTasksTotalCount(){
+		return taskDao.getPresentTasksTotalCount();
+	}
+	
+	
+	// 逾期任务
+	@Override
+	public List<Task> getOverdueTasks(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize) {
+		return taskDao.getOverdueTasks((pageNo-1)*pageSize, pageSize);
+	}
+	
+	//逾期任务总数
+	@Override
+	public int getOverdueTasksTotalCount() {
+		return taskDao.getOverdueTasksTotalCount();
+	}
+
+
 	// 新增任务
 	@Override
 	public void addTask(Task task) {
@@ -214,9 +164,10 @@ public class TaskServiceBizImpl implements TaskService {
 	// }
 	// return percentOfCompletedTasks;
 	// }
-	
+
 	/**
 	 * 为查询的Task结果查询timeExpecteds和timeActuals
+	 * 
 	 * @param allTasks目标任务集合
 	 */
 	private void setIimeExpectedsAndTimeActuals(List<Task> taskList) {
@@ -229,4 +180,6 @@ public class TaskServiceBizImpl implements TaskService {
 			task.setTimeActuals(timeActuals);
 		}
 	}
+
+	
 }

@@ -74,9 +74,57 @@ public interface TaskDao {
 
 	/**
 	 * 查询已完成任务数量
+	 * 
 	 * @return已完成任务数量
 	 */
 	public int getCompletedTasksTotalCount();
-	
-	
+
+	/**
+	 * 查询待办任务
+	 * 
+	 * @param start
+	 * @param pageSize
+	 * @return
+	 */
+	public List<Task> getTodos(@Param("start") Integer start, @Param("offset") Integer offset);
+
+	/**
+	 * 查询待办任务总数
+	 * 
+	 * @return
+	 */
+	public int getTodosTotalCount();
+
+	/**
+	 * 查询当前任务
+	 * 
+	 * @param start
+	 * @param offset
+	 * @return
+	 */
+	public List<Task> getPresentTasks(@Param("start") Integer start, @Param("offset") Integer offset);
+
+	/**
+	 * 查询当前任务总数
+	 * 
+	 * @return
+	 */
+	public int getPresentTasksTotalCount();
+
+	/**
+	 * 查询逾期任务
+	 * 
+	 * @param start
+	 * @param offset
+	 * @return
+	 */
+	public List<Task> getOverdueTasks(@Param("start") Integer start, @Param("offset") Integer offset);
+
+	/**
+	 * 查询逾期任务总数
+	 * 
+	 * @return
+	 */
+	public int getOverdueTasksTotalCount();
+
 }
