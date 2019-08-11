@@ -108,13 +108,13 @@ public class TaskController {
 
 	@RequestMapping(value = "/addTask", method = RequestMethod.POST)
 	public String addTask(@RequestParam(value = "content", required = true) String content,
-			@RequestParam(value = "desc") String desc, @RequestParam(value = "priority") byte priority,
-			@RequestParam(value = "isHabit") byte isHabit,
+			@RequestParam(value = "desc") String desc, @RequestParam(value = "priority") Byte priority,
+			@RequestParam(value = "isHabit") Byte isHabit,
 			@RequestParam(value = "beginTimeExpected") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date beginTimeExpected,
 			@RequestParam(value = "endTimeExpected") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTimeExpected,
 			@RequestParam(value = "beginTimeActual") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date beginTimeActual,
 			@RequestParam(value = "endTimeActual") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTimeActual,
-			@RequestParam(value = "isComplete") byte isComplete) {
+			@RequestParam(value = "isComplete") Byte isComplete) {
 		List<TimeExpected> timeExpecteds = new ArrayList<TimeExpected>();
 		List<TimeActual> timeActuals = new ArrayList<TimeActual>();
 		// 设置timeExpecteds,如果beginTimeExpected和endTimeExpected都为null,则不添加进timeExpecteds
@@ -140,7 +140,7 @@ public class TaskController {
 		task.setTimeActuals(timeActuals);
 		task.setIsComplete(isComplete);
 		taskService.addTask(task);
-		return "redirect:/task/getAllTasks";
+		return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
 	}
 
 	// 待修改

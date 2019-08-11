@@ -1,86 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type="text/javascript" src='/task-mgr/js/task.js'></script>
+<!-- <script type="text/javascript" src='/task-mgr/js/task.js'></script> -->
 <meta charset="UTF-8">
+<style type="text/css">
+	body{
+		background-image: url("../images/background.jpg");
+		background-repeat:repeat;
+		background-size:50% 230%; 
+	}
+	table{
+		background-color:white; 
+	
+	}
+	
+	
+</style>
 <title>添加任务</title>
 </head>
 
 <body>
-<form action="/task-mgr/task/addTask" method="post">
-	<table border="1" width="80%" align="center">
-		<thead>
-			<th align="center">添加列表</th>
-		</thead>
-		<tr>
-			<td align="center" width="7%">任务</td>
-			<td align="center" width="*%">任务描述</td>
-			<td align="center" width="6%">优先级</td>
-			<td align="center" width="4%">日常任务</td>
-			<td align="center" width="10%">预期开始时间</td>
-			<td align="center" width="10%">预期结束时间</td>
-			<td align="center" width="10%">实际开始时间</td>
-			<td align="center" width="10%">实际结束时间</td>
-			<td align="center" width="4%">已完成</td>
-		</tr>
-		<tr>
-			<td align="center">
-			<input type="text" name="content"/>
-			</td>
-			
-			<td align="center">
-			<input type="text" name="desc"/>
-			</td>
-			
-			##优先级
-			<td align="center">
-			<select name="priority">
-			<option align="center" value="1">&nbsp;&nbsp;&nbsp;紧急重要&nbsp;&nbsp;&nbsp;</option>
-			<option align="center" value="2">&nbsp;紧急不重要&nbsp;&nbsp;</option>
-			<option align="center" value="3">&nbsp;不紧急重要&nbsp;&nbsp;</option>
-			<option align="center" value="4">不紧急不重要</option>
-			</select>
-			</td> 
-			
-			##日常任务
-			<td align="center" name="isHabit">
-			<select name="isHabit">
-			<option value="0">否</option>
-			<option value="1">是</option>
-			</select>
-			</td>
-			
-			##预期开始时间
-			<td align="center">
-			<input type="datetime" name="beginTimeExpected"/>
-			</td>
-			##预期结束时间
-			<td align="center">
-			<input type="datetime" name="endTimeExpected"/>
-			</td> 
-			
-			##实际开始时间
-			<td align="center">
-			<input type="datetime" name="beginTimeActual"/>
-			</td>
-			##实际结束时间
-			<td align="center">
-			<input type="datetime" name="endTimeActual"/>
-			</td> 
-			
-			##已完成
-			<td align="center" name="isComplete">
-			<select name="isComplete">
-			<option value="0">否</option>
-			<option value="1">是</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="8"></td>
-			<td align="right"><input type="submit"></td>
-		</tr>
-	</table>
-</form>
+	<form action="/task-mgr/task/addTask" method="post">
+		<table border="1" width="30%" align="center">
+			<thead>
+				<tr>
+					<th align="center" colspan="2">添加列表</th>
+				</tr>
+			</thead>
+			<tr>
+				<td align="center">任务:</td>
+				<td><input type="text" name="content" style="width: 100%; height: 100%"/></td>
+			</tr>
+			<tr>
+				<td align="center">任务描述:</td>
+				<td><textarea name="desc" rows="5" style="width: 100%; height: 100%; resize: none"></textarea></td>
+			</tr>
+			<tr>
+				##优先级
+				<td align="center">优先级:</td>
+				<td><select name="priority" style="width: 100%; height: 100%">
+						<option align="center" value="1">&nbsp;&nbsp;&nbsp;紧急重要&nbsp;&nbsp;&nbsp;</option>
+						<option align="center" value="2">&nbsp;紧急不重要&nbsp;&nbsp;</option>
+						<option align="center" value="3">&nbsp;不紧急重要&nbsp;&nbsp;</option>
+						<option align="center" value="4">不紧急不重要</option>
+				</select></td>
+			</tr>
+			<tr>
+				##日常任务
+
+				<td align="center">日常任务:</td>
+				<td><select name="isHabit" style="width: 100%; height: 100%">
+						<option value="0">否</option>
+						<option value="1">是</option>
+				</select></td>
+			</tr>
+			<tr>
+				##预期开始时间
+
+				<td align="center">预期开始时间:</td>
+				<td><input type="datetime" name="beginTimeExpected" style="width: 100%; height: 100%"/></td>
+			</tr>
+			<tr>
+				##预期结束时间
+
+				<td align="center">预期结束时间:</td>
+				<td><input type="datetime" name="endTimeExpected" style="width: 100%; height: 100%"/></td>
+			</tr>
+			<tr>
+				##实际开始时间
+
+				<td align="center">实际开始时间:</td>
+				<td><input type="datetime" name="beginTimeActual" style="width: 100%; height: 100%"/></td>
+			</tr>
+			<tr>
+				##实际结束时间
+
+				<td align="center">实际结束时间:</td>
+				<td><input type="datetime" name="endTimeActual" style="width: 100%; height: 100%"/></td>
+			</tr>
+			<tr>
+				##已完成
+				<td align="center">已完成:</td>
+				<td><select name="isComplete" style="width: 100%; height: 100%">
+						<option value="0">否</option>
+						<option value="1">是</option>
+				</select></td>
+			</tr>
+
+
+			<tr>
+				<td colspan="2" align="right"><input type="submit"></td>
+			</tr>
+		</table>
+	</form>
 </body>
 </html>
