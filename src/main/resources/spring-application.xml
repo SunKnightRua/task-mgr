@@ -51,6 +51,6 @@
 	</bean>
  
 	<!-- 自动扫描注解的bean -->
-	<context:component-scan base-package="cn.sun.tasks.task.service" />
+	<context:component-scan base-package="cn.sun.tasks.*.service" />
  
 </beans>

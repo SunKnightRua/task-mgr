@@ -3,19 +3,9 @@
 <head>
 <!-- <script type="text/javascript" src='/task-mgr/js/task.js'></script> -->
 <meta charset="UTF-8">
-<style type="text/css">
-	body{
-		background-image: url("../images/background.jpg");
-		background-repeat:repeat;
-		background-size:50% 230%; 
-	}
-	table{
-		background-color:white; 
-	
-	}
-	
-	
-</style>
+<script src="../static/js/jquery-1.11.0.min.js"></script>
+<link href="../static/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="../static/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
 <title>添加任务</title>
 </head>
 
@@ -89,7 +79,7 @@
 
 
 			<tr>
-				<td colspan="2" align="right"><input type="submit"></td>
+				<td colspan="2" align="right"><input type="submit" class="btn btn-success"></td>
 			</tr>
 		</table>
 	</form>
