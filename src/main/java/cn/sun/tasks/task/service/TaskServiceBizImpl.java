@@ -94,14 +94,14 @@ public class TaskServiceBizImpl implements TaskService {
 		taskDao.insertTask(task);
 		int taskId = task.getId();
 		List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
-		if (timeExpecteds.size() != 0) {
+		if (timeExpecteds != null) {
 			for (TimeExpected timeExpected : timeExpecteds) {
 				timeExpected.setTaskId(taskId);
 				timeExpectedDao.addTimeExpected(timeExpected);
 			}
 		}
 		List<TimeActual> timeActuals = task.getTimeActuals();
-		if (timeActuals.size() != 0) {
+		if (timeActuals != null) {
 			for (TimeActual timeActual : timeActuals) {
 				timeActual.setTaskId(taskId);
 				timeActualDao.addTimeActual(timeActual);

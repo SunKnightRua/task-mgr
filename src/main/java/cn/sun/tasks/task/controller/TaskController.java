@@ -85,12 +85,10 @@ public class TaskController {
 	 * @return 对应的任务
 	 */
 	@RequestMapping("/getTaskById")
-	public String getTaskById(Model model, Integer id) {
-		List<Task> tasks = new ArrayList<Task>();
+	@ResponseBody
+	public Task getTaskById(Integer id) {
 		Task task = taskService.getTaskById(id);
-		tasks.add(task);
-		model.addAttribute("tasks", tasks);
-		return "taskList.vm";
+		return task;
 	}
 
 	// @RequestMapping("/getTaskByIds")
@@ -105,57 +103,18 @@ public class TaskController {
 	 * 
 	 * @return 新增任务页面
 	 */
-	// @RequestMapping(value = "/addTask", method = RequestMethod.POST)
-	// public String addTask(String content, String desc, Byte priority, Byte
-	// isHabit,
-	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date beginTimeExpected,
-	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTimeExpected,
-	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date beginTimeActual,
-	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTimeActual, Byte
-	// isComplete) {
-	// List<TimeExpected> timeExpecteds = new ArrayList<TimeExpected>();
-	// List<TimeActual> timeActuals = new ArrayList<TimeActual>();
-	// //
-	// 设置timeExpecteds,如果beginTimeExpected和endTimeExpected都为null,则不添加进timeExpecteds
-	// TimeExpected timeExpected = new TimeExpected();
-	// timeExpected.setBeginTimeExpected(beginTimeExpected);
-	// timeExpected.setEndTimeExpected(endTimeExpected);
-	// if (timeExpected.getBeginTimeExpected() != null ||
-	// timeExpected.getEndTimeExpected() != null) {
-	// timeExpecteds.add(timeExpected);
-	// }
-	// // 设置timeActuals,如果beginTimeActual和endTimeActual都为null,则不添加进timeActuals
-	// TimeActual timeActual = new TimeActual();
-	// timeActual.setBeginTimeActual(beginTimeActual);
-	// timeActual.setEndTimeActual(endTimeActual);
-	// if (timeActual.getBeginTimeActual() != null ||
-	// timeActual.getEndTimeActual() != null) {
-	// timeActuals.add(timeActual);
-	// }
-	// Task task = new Task();
-	// task.setContent(content);
-	// task.setDesc(desc);
-	// task.setPriority(priority);
-	// task.setIsHabit(isHabit);
-	// task.setTimeExpecteds(timeExpecteds);
-	// task.setTimeActuals(timeActuals);
-	// task.setIsComplete(isComplete);
-	// taskService.addTask(task);
-	// return
-	// "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
-	// }
-
 	@RequestMapping(value = "/addTask", method = RequestMethod.POST)
 	@ResponseBody
-	public String addTask(@PathVariable String content, @PathVariable String desc,
-			@PathVariable String priority, @PathVariable String isHabit,
-			@PathVariable String isComplete) {
-		Task task = new Task();
-		task.setContent(content);
-		task.setDesc(desc);
-		task.setPriority(Byte.parseByte(priority));
-		task.setIsHabit(Byte.parseByte(isHabit));
-		task.setIsComplete(Byte.parseByte(isComplete));
+	public String addTask(Task task) {
+		//String content, String desc, String priority, String isHabit, ArrayList<TimeExpected> timeExpecteds, ArrayList<TimeActual> timeActuals, String isComplete
+//		Task task = new Task();
+//		task.setContent(content);
+//		task.setDesc(desc);
+//		task.setPriority(Byte.parseByte(priority));
+//		task.setIsHabit(Byte.parseByte(isHabit));
+//		task.setTimeExpecteds(timeExpecteds);
+//		task.setTimeActuals(timeActuals);
+//		task.setIsComplete(Byte.parseByte(isComplete));
 		taskService.addTask(task);
 		return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
 	}
@@ -179,16 +138,17 @@ public class TaskController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/deleteTask", method=RequestMethod.POST)
+	@RequestMapping(value = "/deleteTask", method = RequestMethod.POST)
 	public String deleteTask(Integer id) {
 		taskService.deleteTask(id);
 		return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
 	}
-	@RequestMapping(value="/deleteTasks", method=RequestMethod.POST)
+
+	@RequestMapping(value = "/deleteTasks", method = RequestMethod.POST)
 	public String deleteTasks(String[] ids) {
-		if(ids != null){
-			
-			for(String tid:ids){
+		if (ids != null) {
+
+			for (String tid : ids) {
 				int id = Integer.parseInt(tid);
 				taskService.deleteTask(id);
 			}

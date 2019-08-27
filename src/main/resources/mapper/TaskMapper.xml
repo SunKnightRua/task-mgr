@@ -96,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		`desc`,
 		priority,
 		is_habit,
+		is_complete,
 		create_time
 		)
 		VALUES
@@ -104,6 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{desc},
 		#{priority},
 		#{isHabit},
+		#{isComplete},
 		now()
 		)
 	</insert>

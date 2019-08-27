@@ -2,7 +2,6 @@ package cn.sun.tasks.user.controller;
 
 import java.util.UUID;
 
-import org.apache.jasper.tagplugins.jstl.core.Redirect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,16 +17,31 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping("/register")
+	@RequestMapping(value="/register", method=RequestMethod.GET)
+	public String register(){
+		return "register.vm";
+	}
+	
+	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public String register(String username, String password) {
 		String id = UUID.randomUUID().toString().substring(5);
 		//这里应该加上校验,判断用户是否已经存在
 		
 		User user = new User();
-		user.setId(id);
-		user.setUsername(username);
-		user.setPassword(password);
-		return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
+		if(username != null && password != null){
+			user.setId(id);
+			user.setUsername(username);
+			user.setPassword(password);
+			userService.register(id, username, password);
+			return "redirect:/user/login";
+		}else {
+			return "forward:/user/register";
+		}
+	}
+	
+	@RequestMapping(value="/login", method=RequestMethod.GET)
+	public String login() {
+		return "login.vm";
 	}
 	
 	/**
