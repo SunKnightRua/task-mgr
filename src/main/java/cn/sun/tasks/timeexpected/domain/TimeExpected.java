@@ -2,11 +2,15 @@ package cn.sun.tasks.timeexpected.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TimeExpected {
 
 	private int id;
 	private int taskId;
+	@JsonFormat(timezone = "GMT+8", pattern="yyyy-MM-dd HH:mm")
 	private Date beginTimeExpected;
+	@JsonFormat(timezone = "GMT+8", pattern="yyyy-MM-dd HH:mm")
 	private Date endTimeExpected;
 	public int getId() {
 		return id;
@@ -32,5 +36,5 @@ public class TimeExpected {
 	public void setEndTimeExpected(Date endTimeExpected) {
 		this.endTimeExpected = endTimeExpected;
 	}
-	
+
 }

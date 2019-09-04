@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import cn.sun.tasks.timeactual.domain.TimeActual;
 import cn.sun.tasks.timeexpected.domain.TimeExpected;
 
 @Repository

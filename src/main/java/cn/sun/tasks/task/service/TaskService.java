@@ -45,13 +45,14 @@ public interface TaskService {
 	 */
 	public void addTask(Task task);
 
-	//
-	// /**
-	// * 更新一条任务
-	// * @param task 任务信息
-	// */
-	// public void updateTask(Task task);
-	//
+	/**
+	 * 更新一条任务
+	 * 
+	 * @param task
+	 *            任务信息
+	 */
+	public void updateTask(Task task);
+
 	/**
 	 * 根据id删除一条任务
 	 * 

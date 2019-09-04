@@ -2,26 +2,21 @@ package cn.sun.tasks.task.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.sun.tasks.task.domain.Msg;
 import cn.sun.tasks.task.domain.Task;
 import cn.sun.tasks.task.service.TaskService;
-import cn.sun.tasks.timeactual.domain.TimeActual;
-import cn.sun.tasks.timeexpected.domain.TimeExpected;
 
 /**
  * TaskController
@@ -43,6 +38,7 @@ public class TaskController {
 	 * @return 获取所有任务
 	 */
 	@RequestMapping("/getAllTasks")
+//	@ResponseBody
 	public String getAllTasks(Model model, @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
 			@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
 			@RequestParam(value = "content", defaultValue = "") String content,
@@ -59,19 +55,24 @@ public class TaskController {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		List<Task> allTasks = taskService.getAllTasks(pageNo, pageSize, content, desc, priority, isHabit, isComplete);
+		List<Task> tasks = new ArrayList<Task>();
+		for (Task task : allTasks) {
+			tasks.add(task);
+		}
+		int totalCount = taskService.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
+//		返回值为Msg
+//		return Msg.success().add("tasks", tasks).add("totalCount", totalCount).add("pageNo", pageNo)
+//				.add("searTabContent", content).add("searTabDesc", desc).add("searTabPriority", priority)
+//				.add("searTabIsHabit", isHabit).add("searTabIsComplete", isComplete);
+//		返回值为String
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("searTabContent", content);
 		model.addAttribute("searTabDesc", desc);
 		model.addAttribute("searTabPriority", priority);
 		model.addAttribute("searTabIsHabit", isHabit);
 		model.addAttribute("searTabIsComplete", isComplete);
-		List<Task> allTasks = taskService.getAllTasks(pageNo, pageSize, content, desc, priority, isHabit, isComplete);
-		List<Task> tasks = new ArrayList<Task>();
-		for (Task task : allTasks) {
-			tasks.add(task);
-		}
 		model.addAttribute("tasks", tasks);
-		int totalCount = taskService.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
 		model.addAttribute("totalCount", totalCount);
 		return "taskList.vm";
 	}
@@ -91,13 +92,6 @@ public class TaskController {
 		return task;
 	}
 
-	// @RequestMapping("/getTaskByIds")
-	// public String getTaskByIds(Model model, List<Integer> ids) {
-	// List<Task> tasks = taskService.getTaskByIds(ids);
-	// model.addAttribute("tasks", tasks);
-	// return "taskList.vm";
-	// }
-
 	/**
 	 * 新增任务
 	 * 
@@ -105,16 +99,7 @@ public class TaskController {
 	 */
 	@RequestMapping(value = "/addTask", method = RequestMethod.POST)
 	@ResponseBody
-	public String addTask(Task task) {
-		//String content, String desc, String priority, String isHabit, ArrayList<TimeExpected> timeExpecteds, ArrayList<TimeActual> timeActuals, String isComplete
-//		Task task = new Task();
-//		task.setContent(content);
-//		task.setDesc(desc);
-//		task.setPriority(Byte.parseByte(priority));
-//		task.setIsHabit(Byte.parseByte(isHabit));
-//		task.setTimeExpecteds(timeExpecteds);
-//		task.setTimeActuals(timeActuals);
-//		task.setIsComplete(Byte.parseByte(isComplete));
+	public String addTask(@RequestBody Task task) {
 		taskService.addTask(task);
 		return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
 	}
@@ -127,9 +112,9 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping("/updateTask")
-	public String updateTask(Task task) {
-		// taskService.updateTask(task);
-		return "getAllTasks.vm";
+	public String updateTask(@RequestBody Task task) {
+		taskService.updateTask(task);
+		return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
 	}
 
 	/**

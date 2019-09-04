@@ -2,11 +2,15 @@ package cn.sun.tasks.timeactual.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TimeActual {
 
 	private int id;
 	private int taskId;
+	@JsonFormat(timezone = "GMT+8", pattern="yyyy-MM-dd HH:mm")
 	private Date beginTimeActual;
+	@JsonFormat(timezone = "GMT+8", pattern="yyyy-MM-dd HH:mm")
 	private Date endTimeActual;
 	public int getId() {
 		return id;

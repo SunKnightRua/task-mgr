@@ -111,18 +111,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 
 	<!-- 更新任务 -->
-<!--  
 	<update id="updateTask" parameterType="cn.sun.tasks.task.domain.Task">
 		UPDATE t_task
 		SET content = #{content},
 		`desc` = #{desc},
 		priority = #{priority},
 		is_habit = #{isHabit},
+		is_complete = #{isComplete},
 		update_time = now()
 		WHERE
 		id = #{id}
 	</update>
--->
+
 	<!-- 删除任务 -->
 	<update id="deleteTask" parameterType="Integer">
 		UPDATE t_task

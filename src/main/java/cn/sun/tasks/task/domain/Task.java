@@ -92,6 +92,4 @@ public class Task {
 	public void setTimeActuals(List<TimeActual> timeActuals) {
 		this.timeActuals = timeActuals;
 	}
-	
-	
 }

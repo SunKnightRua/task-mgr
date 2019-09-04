@@ -110,24 +110,22 @@ public class TaskServiceBizImpl implements TaskService {
 
 	}
 
-	//
-	// // 更新任务
-	// @Override
-	// public void updateTask(Task task) {
-	// // 获取timeExpecteds和timeActuals
-	// List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
-	// List<TimeActual> timeActuals = task.getTimeActuals();
-	// // 循环调用IimeExpected和TimeActual的update方法
-	// taskDao.updateTask(task);
-	// for(TimeExpected timeExpected:timeExpecteds) {
-	// timeExpectedDao.updateTimeExpected(timeExpected);
-	// }
-	// for(TimeActual timeActual:timeActuals) {
-	// timeActualDao.updateTimeActual(timeActual);
-	//
-	// }
-	// }
-	//
+	// 更新任务
+	@Override
+	public void updateTask(Task task) {
+		// 获取timeExpecteds和timeActuals
+		List<TimeExpected> timeExpecteds = task.getTimeExpecteds();
+		List<TimeActual> timeActuals = task.getTimeActuals();
+		// 循环调用IimeExpected和TimeActual的update方法
+		taskDao.updateTask(task);
+		for (TimeExpected timeExpected : timeExpecteds) {
+			timeExpectedDao.updateTimeExpected(timeExpected);
+		}
+		for (TimeActual timeActual : timeActuals) {
+			timeActualDao.updateTimeActual(timeActual);
+		}
+	}
+
 	// 删除任务
 	@Override
 	public void deleteTask(Integer id) {

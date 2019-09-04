@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 根据任务id查询实际时间 -->
 	<select id="getTimeActualsByTaskId" parameterType="int" resultMap="timeActualMap">
 	SELECT
+		id,
 		task_id,
 		begin_time_actual,
 		end_time_actual 

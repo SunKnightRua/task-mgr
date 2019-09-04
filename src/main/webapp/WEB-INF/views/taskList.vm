@@ -47,19 +47,19 @@
 						<div class="form-group">
 							<label class="col-sm-2 control-label">任务</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control" name="content" placeholder="任务">
+								<input type="text" class="form-control" id="add_content"  name="content" placeholder="任务">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">任务描述</label>
 							<div class="col-sm-8">
-								<textarea class="form-control" name="desc" placeholder="任务描述" style="resize: none"></textarea>
+								<textarea class="form-control" id="add_desc" name="desc" placeholder="任务描述" style="resize: none"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">优先级</label>
 							<div class="col-sm-4">
-								<select class="form-control" name="priority">
+								<select class="form-control" id="add_priority" name="priority">
 									<option value="1">重要紧急</option>
 									<option value="2">重要不紧急</option>
 									<option value="3">不重要紧急</option>
@@ -70,7 +70,7 @@
 						<div class="form-group">
 							<label class="col-sm-2 control-label">日常任务</label>
 							<div class="col-sm-4">
-								<select class="form-control" name="isHabit">
+								<select class="form-control" id="add_isHabit" name="isHabit">
 									<option value="0">否</option>
 									<option value="1">是</option>
 								</select>
@@ -79,31 +79,31 @@
 						<div class="form-group">
 							<label class="col-sm-2 control-label">预期时间</label>
 							<div class="col-sm-3">
-								<input type="datetime" class="form-control" name="timeExpecteds[0].beginTimeExpected" placeholder="预期开始时间">
+								<input type="datetime" class="form-control" id="add_beginTimeExpected" name="beginTimeExpected" placeholder="预期开始时间">
 							</div>
 							<div>
 								<label class="col-sm-1 control-label">-</label>
 							</div>
 							<div class="col-sm-3">
-								<input type="datetime" class="form-control" name="timeExpecteds[0].endTimeExpected" placeholder="预期结束时间">
+								<input type="datetime" class="form-control" id="add_endTimeExpected" name="endTimeExpected" placeholder="预期结束时间">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">实际时间</label>
 							<div class="col-sm-3">
-								<input type="datetime" class="form-control" name="timeActuals[0].beginTimeActual" placeholder="实际开始时间">
+								<input type="datetime" class="form-control" id="add_beginTimeActual" name="beginTimeActual" placeholder="实际开始时间">
 							</div>
 							<div>
 								<label class="col-sm-1 control-label">-</label>
 							</div>
 							<div class="col-sm-3">
-								<input type="datetime" class="form-control" name="timeActuals[0].endTimeActual" placeholder="实际结束时间">
+								<input type="datetime" class="form-control" id="add_endTimeActual" name="endTimeActual" placeholder="实际结束时间">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">已完成</label>
 							<div class="col-sm-4">
-								<select class="form-control" name="isComplete">
+								<select class="form-control" id="add_isComplete" name="isComplete">
 									<option value="0">否</option>
 									<option value="1">是</option>
 								</select>
@@ -128,7 +128,7 @@
 					<h4 class="modal-title" id="myModalLabel">编辑任务</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal">
+					<form class="form-horizontal" id="edit_task_form">
 						<div class="form-group">
 							<label class="col-sm-2 control-label">任务</label>
 							<div class="col-sm-8">
@@ -533,20 +533,48 @@
 		+isHabit+"&isComplete="+isComplete;
 	};
 	//添加任务保存
+	var timeExpecteds = [];
+	var timeActuals = [];
 	$("#add_save_btn").click(function(){
-		$.ajax({
-			url:"/task-mgr/task/addTask",
-			type:"POST",
-			data:$('#add_task_modal form').serialize(),
-			success:function(result){
-				alert("插入成功");
-				$("#add_task_modal").modal('hide')
+		content = $("#add_content").val();
+		desc = $("#add_desc").val();
+		priority = $("#add_priority").val();
+		isHabit = $("#add_isHabit").val();
+		isComplete = $("#add_isComplete").val();
+		timeExpecteds = [{"beginTimeExpected":$("#add_beginTimeExpected").val(),"endTimeExpected":$("#add_endTimeExpected").val()}];
+		timeActuals=[{"beginTimeActual":$("#add_beginTimeActual").val(),"endTimeActual":$("#add_endTimeActual").val()}];
+		var data = {
+            	"content":content,
+            	"desc":desc,
+            	"priority":priority,
+            	"isHabit":isHabit,
+            	"timeExpecteds":timeExpecteds,
+            	"timeActuals":timeActuals,
+            	"isComplete":isComplete
+            };
+       $.ajax({
+            //请求方式
+            type : "POST",
+            //请求的媒体类型
+            contentType: "application/json;charset=UTF-8",
+            //请求地址
+            url : "/task-mgr/task/addTask",
+            //数据，json字符串
+            //data :data,
+            data :JSON.stringify(data),
+            //请求成功
+            success : function(result) {
+            	alert("插入成功");
+				$("#add_task_modal").modal('hide');
 				window.location.reload();
-			},
-			error:function(e){
-				alert("失败");
-			}
-		});
+            },
+            //请求失败，包含具体的错误信息
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+                alert("插入失败");
+            }
+        }); 
 	});
 	
 	//删除单个任务
@@ -583,37 +611,80 @@
 		}); 
 	}
 */
-	//编辑任务
+	//编辑任务数据回显
+	var taskId;
+	var timeExpectedId;
+	var timeActualId;
 	function edit_task(id){
 		$.ajax({
 			url:"/task-mgr/task/getTaskById?id="+id,
 			type:"GET",
 			success:function(result){
-				var $edit_content = result.content;
-				var $edit_desc = result.desc;
-				var $edit_priority = result.priority;
-				var $edit_isHabit = result.isHabit;
-				var $edit_beginTimeExpected = result.timeExpecteds[0].beginTimeExpected;
-				var $edit_endTimeExpected = result.timeExpecteds[0].endTimeExpected;
-				var $edit_beginTimeActual = result.timeActuals[0].beginTimeActual;
-				var $edit_endTimeActual = result.timeActuals[0].endTimeActual;
-				var $edit_isComplete = result.isComplete;
-				alert($edit_content);
-				console.log($!dateTool.format('yyyy-MM-dd HH:mm:ss', $!edit_beginTimeExpected));
+				taskId = result.timeExpecteds[0].taskId;
+				timeExpectedId = result.timeExpecteds[0].id;
+				timeActualId = result.timeActuals[0].id;
+				$("#edit_task_modal").modal('show');
+				//赋值
+				$("#edit_content").val(result.content);
+				$("#edit_desc").val(result.desc);
+				$("#edit_priority").val(result.priority);
+				$("#edit_isHabit").val(result.isHabit);
+				if(result.timeExpecteds.length != 0){
+					$("#edit_beginTimeExpected").val(result.timeExpecteds[0].beginTimeExpected);
+					$("#edit_endTimeExpected").val(result.timeExpecteds[0].endTimeExpected);
+				}else{
+					$("#edit_beginTimeExpected").val("");
+					$("#edit_endTimeExpected").val("");
+				}
+				if(result.timeActuals.length != 0){
+					$("#edit_beginTimeActual").val(result.timeActuals[0].beginTimeActual);
+					$("#edit_endTimeActual").val(result.timeActuals[0].endTimeActual);
+				}else{
+					$("#edit_beginTimeActual").val("");
+					$("#edit_endTimeActual").val("");
+				}
+				$("#edit_isComplete").val(result.isComplete);
+				
 				console.log(result);
 			}
 		});
-		$("#edit_task_modal").modal('show');
-		$("#edit_content").value = edit_content;
-		$("#edit_desc").value = edit_desc;
-		$("#edit_priority").value = edit_priority;
-		$("#edit_isHabit").value = edit_isHabit;
-		$("#edit_beginTimeExpected").value = edit_beginTimeExpected;
-		$("#edit_endTimeExpected").value = edit_endTimeExpected;
-		$("#edit_beginTimeActual").value = edit_beginTimeActual;
-		$("#edit_endTimeActual").value = edit_endTimeActual;
-		$("#edit_isComplete").value = edit_isComplete;
 	}
+	
+	//编辑任务保存
+	$("#task_update_btn").click(function(){
+		content = $("#edit_content").val();
+		desc = $("#edit_desc").val();
+		priority = $("#edit_priority").val();
+		isHabit = $("#edit_isHabit").val();
+		isComplete = $("#edit_isComplete").val();
+		timeExpecteds = [{"id":timeExpectedId, "taskId":taskId, "beginTimeExpected":$("#edit_beginTimeExpected").val(), "endTimeExpected":$("#edit_endTimeExpected").val()}];
+		timeActuals=[{"id":timeActualId, "taskId":taskId, "beginTimeActual":$("#edit_beginTimeActual").val(), "endTimeActual":$("#edit_endTimeActual").val()}];
+		
+		data={
+			"id":taskId,
+			"content":content,
+			"desc":desc,
+			"priority":priority,
+			"isHabit":isHabit,
+			"isComplete":isComplete,
+			"timeExpecteds":timeExpecteds,
+			"timeActuals":timeActuals
+		};
+		$.ajax({
+			url:"/task-mgr/task/updateTask",
+			type:"POST",
+			contentType:"application/json;charset=UTF-8",
+			data:JSON.stringify(data),
+			success:function(result){
+				alert("修改成功");
+				window.location.reload();
+			},
+			error:function(e){
+				console.log(e.status);
+				console.log(e.responseText);
+			}
+		});
+	});
 </script>
 
 <script type="text/javascript">
