@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 
 	<!-- 查询所有任务 -->
-	<select id="getAllTasks" resultMap="taskMap">
+	<select id="listTasks" resultMap="taskMap">
 		SELECT
 			t.id,
 			t.content,
@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<!-- 查询所有任务总数量TotalCount -->
-	<select id="getAllTasksTotalCount" resultType="int">
+	<select id="countListTasks" resultType="int">
 		SELECT
 			count(t.id) 
 		FROM

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.sun.tasks.common.page.Page;
 import cn.sun.tasks.task.dao.TaskDao;
 import cn.sun.tasks.task.domain.Task;
 import cn.sun.tasks.timeactual.dao.TimeActualDao;
@@ -25,18 +26,27 @@ public class TaskServiceBizImpl implements TaskService {
 
 	// 获取所有任务
 	@Override
-	public List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, Byte priority,
+	public Page<Task> listTasks(Integer pageNo, Integer pageSize, String content, String desc, Byte priority,
 			Byte isHabit, Byte isComplete) {
-		List<Task> allTasks = taskDao.getAllTasks((pageNo - 1) * pageSize, pageSize, content, desc, priority, isHabit,
+		List<Task> tasks = taskDao.listTasks((pageNo - 1) * pageSize, pageSize, content, desc, priority, isHabit,
 				isComplete);
-		this.setIimeExpectedsAndTimeActuals(allTasks);
-		return allTasks;
+		this.setIimeExpectedsAndTimeActuals(tasks);
+		int totalNum = taskDao.countListTasks(content, desc, priority, isHabit, isComplete);
+
+		Page<Task> page = new Page<Task>();
+		page.setData(tasks);
+		page.setPageNo(pageNo);
+		page.setPageSize(pageSize);
+		page.setTotalNum(totalNum);
+		int pages = totalNum % pageSize == 0 ? totalNum / pageSize : totalNum / pageSize +1;
+		page.setPages(pages);
+		return page;
 	}
 
 	// 获取所有任务总数量
 	@Override
-	public int getAllTasksTotalCount(String content, String desc, Byte priority, Byte isHabit, Byte isComplete) {
-		return taskDao.getAllTasksTotalCount(content, desc, priority, isHabit, isComplete);
+	public int countListTasks(String content, String desc, Byte priority, Byte isHabit, Byte isComplete) {
+		return taskDao.countListTasks(content, desc, priority, isHabit, isComplete);
 	}
 
 	// 根据id查询任务
@@ -53,11 +63,12 @@ public class TaskServiceBizImpl implements TaskService {
 	// 待办任务
 	@Override
 	public List<Task> getTodos(Integer pageNo, Integer pageSize) {
-		List<Task> todos = taskDao.getTodos((pageNo-1)*pageSize, pageSize);
+		List<Task> todos = taskDao.getTodos((pageNo - 1) * pageSize, pageSize);
 		this.setIimeExpectedsAndTimeActuals(todos);
 		return todos;
 	}
-	//待办任务总数
+
+	// 待办任务总数
 	@Override
 	public int getTodosTotalCount() {
 		return taskDao.getTodosTotalCount();
@@ -65,28 +76,26 @@ public class TaskServiceBizImpl implements TaskService {
 
 	// 当前任务
 	@Override
-	public List<Task> getPresentTasks(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize) {
-		return taskDao.getPresentTasks((pageNo-1)*pageSize, pageSize);
+	public List<Task> getPresentTasks(@Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize) {
+		return taskDao.getPresentTasks((pageNo - 1) * pageSize, pageSize);
 	}
 
-	//当前任务总数
-	public int getPresentTasksTotalCount(){
+	// 当前任务总数
+	public int getPresentTasksTotalCount() {
 		return taskDao.getPresentTasksTotalCount();
 	}
-	
-	
+
 	// 逾期任务
 	@Override
-	public List<Task> getOverdueTasks(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize) {
-		return taskDao.getOverdueTasks((pageNo-1)*pageSize, pageSize);
+	public List<Task> getOverdueTasks(@Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize) {
+		return taskDao.getOverdueTasks((pageNo - 1) * pageSize, pageSize);
 	}
-	
-	//逾期任务总数
+
+	// 逾期任务总数
 	@Override
 	public int getOverdueTasksTotalCount() {
 		return taskDao.getOverdueTasksTotalCount();
 	}
-
 
 	// 新增任务
 	@Override
@@ -177,5 +186,4 @@ public class TaskServiceBizImpl implements TaskService {
 		}
 	}
 
-	
 }

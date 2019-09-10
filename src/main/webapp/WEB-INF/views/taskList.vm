@@ -7,32 +7,7 @@
 <script src="/task-mgr/static/js/jquery-1.11.0.min.js"></script>
 <link href="/task-mgr/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="/task-mgr/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-/*  
-	//获取完成任务数/总任务数
-	$(function(){
-		$.ajax({
-			//请求方式
-			type : "POST",
-			//请求的媒体类型
-			dataType:"text",
-			//请求地址${pageContext.request.contextPath}
-			url : "/task-mgr/task/getPercentOfCompletedTasks",
-            
-			//请求成功
-			success : function(data) {
-				console.log(data); 
-				$('#percentOfCompletedTasks').html("完成度:"+data+"%");
-			},
-			//请求失败，包含具体的错误信息
-			error : function(e){
-				console.log(e.status);
-				console.log(e.responseText);
-			}
-		});
-	}); 
-*/ 
-</script>
+<script src="/task-mgr/static/js/task.js"></script>
 <body>
 <!-- 添加任务模态框 -->
 	<div class="modal fade" id="add_task_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -247,7 +222,7 @@
 							<option value="1">是</option>
 					    </select>
 					  </div>
-					  <button type="button" class="btn btn-default" onclick="search()">
+					  <button type="button" class="btn btn-default" id="search_btn">
 						  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 							搜索
 					  </button>
@@ -255,444 +230,50 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<table class="table-hover table-bordered">
-				<tr>
-					<td align="center" width='2.5%'>全选</td>
-					<td align="center" width="10%">任务</td>
-					<td align="center" width='*%'>任务描述</td>
-					<td align="center" width="6%">优先级</td>
-					<td align="center" width="6%">日常任务</td>
-					<td align="center" width="10%">预期时间</td>
-					<td align="center" width="10%">实际时间</td>
-					<td align="center" width="10%">创建时间</td>
-					<td align="center" width="10%">更新时间</td>
-					<td align="center" width="5%">已完成</td>
-					<td align="center" width="5%">已删除</td>
-					<td align="center" width="10%">操作</td>
-				</tr>
-				#foreach($!task in $!tasks)
-				<tr>
-					<td align="center"><input type="checkbox"  name="ids" value="$!task.id" id="sel_tasks"/></td>
-					<td align="center">$!task.content</td>
-					<td align="center">$!task.desc</td>
-					
-					##优先级
-					<td align="center">
-					#if ($!task.priority == 1)
-					重要<br/>紧急
-					#elseif ($!task.priority == 2)
-					重要<br/>不紧急
-					#elseif ($!task.priority == 3)
-					不重要<br/>紧急
-					#elseif ($!task.priority == 4)
-					不重要<br/>不紧急
-					#end
-					</td> 
-					
-					##日常任务
-					<td align="center">
-					#if($!task.isHabit == 0)
-					否 
-					#elseif ($!task.isHabit == 1)
-					是
-					#end
-					</td>
-					
-					<td align="center">
-					#foreach($!timeExpected in $!task.timeExpecteds)
-					##预期开始时间
-						$!dateTool.format('HH:mm',$!timeExpected.beginTimeExpected)-
-					##预期结束时间
-					$!dateTool.format('HH:mm',$!timeExpected.endTimeExpected)<br/>
-					#end
-					</td> 
-					
-					<td align="center">
-					#foreach($!timeActual in $!task.timeActuals)
-					##实际开始时间
-					$!dateTool.format('HH:mm',$!timeActual.beginTimeActual)-
-					##实际结束时间
-					$!dateTool.format('HH:mm',$!timeActual.endTimeActual)<br/>
-					#end
-					</td> 
-					
-					<td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!task.createTime)</td>
-					<td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!task.updateTime)</td>
-					
-					##已完成
-					<td align="center">
-					#if($!task.isComplete == 0)
-					否
-					#elseif($!task.isComplete == 1)
-					是
-					#end
-					</td>
-					
-					##已删除
-					<td align="center">
-					#if($!task.isDelete == 0)
-					否
-					#elseif($!task.isDelete == 1)
-					是
-					#end
-					</td>
-					<td align="center">
-					<button class="btn btn-primary btn-xs" onclick="edit_task($task.id)">
-						 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-						编辑
-					</button>
-					<button class="btn btn-danger btn-xs" onclick="del_task($!task.id)">
-						 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-						删除
-					</button>
-					</td>
-				</tr>
-				#end
+		<div class="row col-md-12">
+			<table class="table-hover table-bordered  col-md-12" id="task_table">
+				<thead>
+					<tr>
+						<td align="center" width="10%">任务</td>
+						<td align="center" width='*%'>任务描述</td>
+						<td align="center" width="6%">优先级</td>
+						<td align="center" width="6%">日常任务</td>
+						<td align="center" width="10%">预期时间</td>
+						<td align="center" width="10%">实际时间</td>
+						<td align="center" width="10%">创建时间</td>
+						<td align="center" width="10%">更新时间</td>
+						<td align="center" width="5%">已完成</td>
+						<td align="center" width="5%">已删除</td>
+						<td align="center" width="10%">操作</td>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
 			</table>
 		</div>
 		<div class="row">
 			<div class="text-right">
 				<button class="btn btn-primary" data-toggle="modal" data-target="#add_task_modal">添加</button>
-				<button class="btn btn-danger" onclick="del_tasks()">删除</button>
 			</div>
 		</div>
+		
 		<div class="row">
-			<!-- 分页 -->
-			##一页大小
-			#set($pageSize = 10)
-			#set($page2 = $totalCount/$pageSize)
-			#set($page1 = $totalCount/$pageSize+1)
-			##设置总页数
-			#if($totalCount/$pageSize ==0)
-				#if($totalCount<$pageSize)
-					#set($pages = $page2+1)
-				#else
-					#set($pages = $page2)
-				#end 
-			#else 
-				#set($pages = $page1)  
-			#end
-			##当前页
-			#set($pre1_page = $pageNo - 1)
-			#set($pre2_page = $pageNo - 2)
-			#set($next1_page = $pageNo + 1)
-			#set($next2_page = $pageNo + 2)
-			<h2 align="center">
-			#if($pages > 1)
-				#if($pageNo>1)
-					<a href="javascript:;" onclick="firstPage()">首页</a>
-					<a href="javascript:;" onclick="prePage()">上页</a>
-				#end
-				#if($pre2_page >=1)
-					<a href="javascript:;" onclick="pre2Page()">$pre2_page</a>
-				#end
-				#if($pre1_page >=1)
-					<a href="javascript:;" onclick="prePage()">$pre1_page</a>
-				#end
-					<a href="javascript:;" disabled> $pageNo</a>
-				#if($next1_page <=$pages)
-					<a href="javascript:;" onclick="nextPage()">$next1_page</a>
-				#end
-				#if($next2_page <=$pages)
-					<a href="javascript:;" onclick="next2Page()">$next2_page</a>
-				#end
-				#if($pageNo < $pages)
-					<a href="javascript:;" onclick="nextPage()">下页</a>
-					<a href="javascript:;" onclick="lastPage()">尾页</a>
-				#end
-			#end 
-				#if($pages>0)
-				 当前第<span>$pageNo</span>页,共<span id="pages">$pages</span>页 
-				 <input type="text" id= "index" style="width:30px"><a href="javascript:void(0)" onClick="jump()">跳转</a>
-			 #else
-				没有找到东西
-			 #end
-			 </h2>
+			<div class="text-right">
+				<button class="btn btn-primary" id="test">测试</button>
+			</div>
+		</div>
+		
+		<div class="row">
+			<!-- 分页文字信息 -->
+			<div class="col-md-6" id="page_info_area"></div>
+			<!-- 分页条 -->
+			<div class="col-md-6" id="page_nav_area"></div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$("#test").click(function(){
+			alert($("#searTabContent").val());
+		});
+	</script>
 </body>
-<script type="text/javascript">
-	//获取URL
-	var $url = location.href;
-	$url = $url.split("?", 1)[0];
-	var pages;
-	var content;
-	var desc;
-	var priority;
-	var isHabit;
-	var isComplete;
-	//搜索方法
-	function search(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		window.location.href = $url+"?pageNo=1&pageSize="+$pageSize+"&content="
-				+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-				+isHabit+"&isComplete="+isComplete;
-	};
-	//分页方法
-	//跳转到指定页码
-	function jump(){ 
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		var $targetPage = document.getElementById("index").value;
-		if($targetPage != null && $targetPage>0 && $targetPage<=pages){//有输入值，并且输入值在1到总页数之间才跳转。
-			window.location.href = $url + "?pageNo=" + $targetPage + "&pageSize=" + $pageSize+"&content="
-			+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-			+isHabit+"&isComplete="+isComplete;
-		}
-	};
-	//首页
-	function firstPage(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		window.location.href = $url + "?pageNo=1&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//上页
-	function prePage(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		var $prePage = ${pageNo}-1;
-		window.location.href = $url + "?pageNo=" + $prePage + "&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//上上页
-	function pre2Page(){
-		var $pre2Page = ${pageNo}-2;
-		window.location.href = $url + "?pageNo=" + $pre2Page + "&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//当前页
-	function currPage(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		window.location.href = $url + "?pageNo=" + $pageNo + "&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//下页
-	function nextPage(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		var $nextPage = ${pageNo}+1;
-		window.location.href = $url + "?pageNo=" + $nextPage + "&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//下下页
-	function next2Page(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		var $next2Page = ${pageNo}+2;
-		window.location.href = $url + "?pageNo=" + $next2Page + "&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//尾页
-	function lastPage(){
-		pages =document.getElementById("pages").innerHTML;
-		content = document.getElementById("searTabContent").value;
-		desc = document.getElementById("searTabDesc").value;
-		priority = document.getElementById("searTabPriority").value;
-		isHabit = document.getElementById("searTabIsHabit").value;
-		isComplete = document.getElementById("searTabIsComplete").value;
-		window.location.href = $url + "?pageNo=" + pages + "&pageSize=" + $pageSize+"&content="
-		+encodeURI(content)+"&desc="+encodeURI(desc)+"&priority="+priority+"&isHabit="
-		+isHabit+"&isComplete="+isComplete;
-	};
-	//添加任务保存
-	var timeExpecteds = [];
-	var timeActuals = [];
-	$("#add_save_btn").click(function(){
-		content = $("#add_content").val();
-		desc = $("#add_desc").val();
-		priority = $("#add_priority").val();
-		isHabit = $("#add_isHabit").val();
-		isComplete = $("#add_isComplete").val();
-		timeExpecteds = [{"beginTimeExpected":$("#add_beginTimeExpected").val(),"endTimeExpected":$("#add_endTimeExpected").val()}];
-		timeActuals=[{"beginTimeActual":$("#add_beginTimeActual").val(),"endTimeActual":$("#add_endTimeActual").val()}];
-		var data = {
-            	"content":content,
-            	"desc":desc,
-            	"priority":priority,
-            	"isHabit":isHabit,
-            	"timeExpecteds":timeExpecteds,
-            	"timeActuals":timeActuals,
-            	"isComplete":isComplete
-            };
-       $.ajax({
-            //请求方式
-            type : "POST",
-            //请求的媒体类型
-            contentType: "application/json;charset=UTF-8",
-            //请求地址
-            url : "/task-mgr/task/addTask",
-            //数据，json字符串
-            //data :data,
-            data :JSON.stringify(data),
-            //请求成功
-            success : function(result) {
-            	alert("插入成功");
-				$("#add_task_modal").modal('hide');
-				window.location.reload();
-            },
-            //请求失败，包含具体的错误信息
-            error : function(e){
-                console.log(e.status);
-                console.log(e.responseText);
-                alert("插入失败");
-            }
-        }); 
-	});
-	
-	//删除单个任务
-	function del_task(id){
-		$(function(){
-			$.ajax({
-				url:"/task-mgr/task/deleteTask?id="+id,
-				type:"POST",
-				success:function(){
-					alert("删除成功!");
-					window.location.reload();
-				}
-			});
-		});
-	}
-	//批量删除
-/*
-	function del_tasks(){
-		var ids=[];
-		$("input[name='ids']:checked").each(function(){
-			ids.push($(this).val());
-			});
-		alert(ids);
-		$(function(){
-			$.ajax({
-				url:"/task-mgr/task/deleteTasks",
-				type:"POST",
-				data:JSON.stringify(ids),
-				success:function(){
-					alert("删除成功!");
-					window.location.reload();
-				}
-			});
-		}); 
-	}
-*/
-	//编辑任务数据回显
-	var taskId;
-	var timeExpectedId;
-	var timeActualId;
-	function edit_task(id){
-		$.ajax({
-			url:"/task-mgr/task/getTaskById?id="+id,
-			type:"GET",
-			success:function(result){
-				taskId = result.timeExpecteds[0].taskId;
-				timeExpectedId = result.timeExpecteds[0].id;
-				timeActualId = result.timeActuals[0].id;
-				$("#edit_task_modal").modal('show');
-				//赋值
-				$("#edit_content").val(result.content);
-				$("#edit_desc").val(result.desc);
-				$("#edit_priority").val(result.priority);
-				$("#edit_isHabit").val(result.isHabit);
-				if(result.timeExpecteds.length != 0){
-					$("#edit_beginTimeExpected").val(result.timeExpecteds[0].beginTimeExpected);
-					$("#edit_endTimeExpected").val(result.timeExpecteds[0].endTimeExpected);
-				}else{
-					$("#edit_beginTimeExpected").val("");
-					$("#edit_endTimeExpected").val("");
-				}
-				if(result.timeActuals.length != 0){
-					$("#edit_beginTimeActual").val(result.timeActuals[0].beginTimeActual);
-					$("#edit_endTimeActual").val(result.timeActuals[0].endTimeActual);
-				}else{
-					$("#edit_beginTimeActual").val("");
-					$("#edit_endTimeActual").val("");
-				}
-				$("#edit_isComplete").val(result.isComplete);
-				
-				console.log(result);
-			}
-		});
-	}
-	
-	//编辑任务保存
-	$("#task_update_btn").click(function(){
-		content = $("#edit_content").val();
-		desc = $("#edit_desc").val();
-		priority = $("#edit_priority").val();
-		isHabit = $("#edit_isHabit").val();
-		isComplete = $("#edit_isComplete").val();
-		timeExpecteds = [{"id":timeExpectedId, "taskId":taskId, "beginTimeExpected":$("#edit_beginTimeExpected").val(), "endTimeExpected":$("#edit_endTimeExpected").val()}];
-		timeActuals=[{"id":timeActualId, "taskId":taskId, "beginTimeActual":$("#edit_beginTimeActual").val(), "endTimeActual":$("#edit_endTimeActual").val()}];
-		
-		data={
-			"id":taskId,
-			"content":content,
-			"desc":desc,
-			"priority":priority,
-			"isHabit":isHabit,
-			"isComplete":isComplete,
-			"timeExpecteds":timeExpecteds,
-			"timeActuals":timeActuals
-		};
-		$.ajax({
-			url:"/task-mgr/task/updateTask",
-			type:"POST",
-			contentType:"application/json;charset=UTF-8",
-			data:JSON.stringify(data),
-			success:function(result){
-				alert("修改成功");
-				window.location.reload();
-			},
-			error:function(e){
-				console.log(e.status);
-				console.log(e.responseText);
-			}
-		});
-	});
-</script>
-
-<script type="text/javascript">
-//搜索框默认值
-	$("#searTabContent").val('$!searTabContent');
-	$("#searTabDesc").val('$!searTabDesc');
-	$("#searTabPriority").val('$!searTabPriority');
-	$("#searTabIsHabit").val('$!searTabIsHabit');
-	$("#searTabIsComplete").val('$!searTabIsComplete');
-</script>
 </html>

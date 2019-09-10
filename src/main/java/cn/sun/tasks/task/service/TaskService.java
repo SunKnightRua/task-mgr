@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import cn.sun.tasks.common.page.Page;
 import cn.sun.tasks.task.domain.Task;
 
 public interface TaskService {
@@ -18,7 +19,7 @@ public interface TaskService {
 	 * @param content
 	 * @return 所有任务
 	 */
-	public abstract List<Task> getAllTasks(Integer pageNo, Integer pageSize, String content, String desc, Byte priority,
+	public abstract Page<Task> listTasks(Integer pageNo, Integer pageSize, String content, String desc, Byte priority,
 			Byte isHabit, Byte isComplete);
 
 	/**
@@ -26,7 +27,7 @@ public interface TaskService {
 	 * 
 	 * @return 所有任务总数量
 	 */
-	public abstract int getAllTasksTotalCount(String content, String desc, Byte priority, Byte isHabit,
+	public abstract int countListTasks(String content, String desc, Byte priority, Byte isHabit,
 			Byte isComplete);
 
 	/**

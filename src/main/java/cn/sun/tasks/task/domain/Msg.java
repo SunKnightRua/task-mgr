@@ -5,10 +5,9 @@ import java.util.Map;
 
 public class Msg {
 	//状态码	100-成功	200-失败
-	private int code;
+	private Integer code;
 	//提示信息
 	private String msg;
-	
 	//用户要返回的数据
 	private Map<String, Object> extend = new HashMap<String, Object>();
 	
@@ -30,12 +29,12 @@ public class Msg {
 		this.getExtend().put(key, value);
 		return this;
 	}
-	
-	public int getCode() {
+
+	public Integer getCode() {
 		return code;
 	}
 
-	public void setCode(int code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 

@@ -52,7 +52,7 @@ public class UserController {
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(User user) {
  		if(userService.login(user.getUsername(), user.getPassword())){
-			return "redirect:/task/getAllTasks?pageNo=1&pageSize=10&content=&desc=&priority=&isHabit=&isComplete=";
+			return "redirect:/task/listTasks";
 		}else {
 			return "forward:/login";
 		}
