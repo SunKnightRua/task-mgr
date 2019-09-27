@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans
@@ -10,9 +9,76 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd     
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
- 
+
+	<!-- 自定义Realm -->
+	<bean id="myRealm" class="cn.sun.tasks.shiro.realm.MyRealm">
+	    <!-- 将凭证匹配器设置到realm中，realm按照凭证匹配器的要求进行散列 -->
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+	</bean>
+
+    <!-- 凭证匹配器 -->
+	<bean id="credentialsMatcher"
+	    class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+	    <property name="hashAlgorithmName" value="md5" />
+	    <property name="hashIterations" value="1" />
+	</bean>
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+	</bean>
+	
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+    
+    <!-- 开启Shiro注解 -->
+    <bean
+        class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+        depends-on="lifecycleBeanPostProcessor" />
+    <bean
+        class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean>
+    
+    <bean id="myFileter" class="cn.sun.tasks.shiro.filter.MyFilter">
+    </bean>
+    
+	<!-- Shiro过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- Shiro的核心安全接口,这个属性是必须的 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 身份认证失败，则跳转到登录页面的配置 -->
+		<property name="loginUrl" value="/user/login" />
+		<property name="successUrl" value="/taskList.vm"/>
+		<!-- 自定义filter配置 -->
+        <property name="filters">
+            <map>
+                <entry key="operms" value-ref="myFileter"/>
+            </map>
+        </property>
+		<!-- 权限认证失败，则跳转到指定页面 -->
+		<property name="unauthorizedUrl" value="/refuse.jsp" />
+		<!-- Shiro连接约束配置,即过滤链的定义 -->
+		<property name="filterChainDefinitions">
+			<value>
+			    / = anon
+			    /static/** = anon
+			    /refuse.jsp = anon
+				/user/login = anon
+				/task/getTask* = authc
+                /user/logout = logout
+                /** = operms
+                <!-- /task/listTasks = perms["task:query"]
+                /task/addTask = perms["task:add"]
+                /task/updateTask = perms["task:update"]
+                /task/deleteTask = perms["task:delete"] -->
+			</value>
+		</property>
+	</bean>
+
 	<!-- 引入jdbc配置文件 -->
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:jdbc.properties</value>
@@ -20,9 +86,10 @@
 			</list>
 		</property>
 	</bean>
- 
+
 	<!-- 配置数据源 -->
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<!-- 使用properties来配置 -->
 		<property name="driverClassName">
 			<value>${jdbc_driverClassName}</value>
@@ -37,20 +104,20 @@
 			<value>${jdbc_password}</value>
 		</property>
 	</bean>
- 
+
 	<!-- 配置Mybatis的文件 ，mapperLocations配置**Mapper.xml文件位置，configLocation配置mybatis-config文件位置 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:mapper/*.xml" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
-	
+
 	<!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="cn.sun.tasks.*.dao" />
 	</bean>
- 
+
 	<!-- 自动扫描注解的bean -->
 	<context:component-scan base-package="cn.sun.tasks.*.service" />
- 
+
 </beans>

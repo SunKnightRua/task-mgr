@@ -2,6 +2,7 @@ package cn.sun.tasks.user.service;
 
 import java.util.List;
 
+import cn.sun.tasks.user.domain.ActiveUser;
 import cn.sun.tasks.user.domain.User;
 
 public interface UserService {
@@ -25,5 +26,5 @@ public interface UserService {
 	 * @param password
 	 * @return
 	 */
-	public boolean login(String username, String password);
+	public User getUserByUsername(String username);
 }

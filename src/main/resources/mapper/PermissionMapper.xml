@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sun.tasks.permission.dao.PermissionDao">
+    <resultMap type="cn.sun.tasks.permission.domain.Permission" id="PermissionMap">
+        <id property="id" column="id"/>
+        <result property="url" column="url"/>
+        <result property="perCode" column="per_code"/>
+    </resultMap>
+    <select id="listPermissions" parameterType="string" resultMap="PermissionMap">
+        SELECT
+		    e.url,
+		    e.per_code 
+		FROM
+		    t_user a
+		    LEFT JOIN t_user_role b ON a.id = b.user_id
+		    LEFT JOIN t_role c ON b.role_id = c.id
+		    LEFT JOIN t_role_permission d ON c.id = d.role_id
+		    LEFT JOIN t_permission e ON d.permission_id = e.id
+		    WHERE a.id = #{userId} 
+    </select>
+</mapper>

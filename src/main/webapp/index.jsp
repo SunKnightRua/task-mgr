@@ -8,8 +8,13 @@
 <script src="/task-mgr/static/js/jquery-1.11.0.min.js"></script>
 <link href="/task-mgr/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="/task-mgr/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		window.location.href = "/task-mgr/user/login";
+	});
+</script>
 <body>
-	<form class="form-horizontal" id="login_form">
+	<!-- <form class="form-horizontal" id="login_form">
 	  <div class="form-group">
 	    <label class="col-sm-2 control-label">用户名</label>
 	    <div class="col-sm-3" >
@@ -55,6 +60,6 @@
 				window.location.href="/task-mgr/user/register";
 			});
 		});
-	</script>
+	</script> -->
 </body>
 </html>
