@@ -3,7 +3,9 @@ package cn.sun.tasks.task.controller;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.velocity.app.event.ReferenceInsertionEventHandler.referenceInsertExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,8 @@ import cn.sun.tasks.task.service.TaskService;
 @Controller
 @RequestMapping("/task")
 public class TaskController {
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 	@Autowired
 	private TaskService taskService;
@@ -54,8 +58,12 @@ public class TaskController {
 		Page<Task> page = taskService.listTasks(pageNo, pageSize, content, desc, priority, isHabit, isComplete);
 
 		// 返回值为Msg
-		return Msg.success().add("page", page).add("searTabContent", content).add("searTabDesc", desc)
-				.add("searTabPriority", priority).add("searTabIsHabit", isHabit).add("searTabIsComplete", isComplete);
+		return Msg.success().add("page", page).add("searTabContent", content)
+	        .add("searTabDesc", desc)
+	        .add("searTabPriority", priority)
+	        .add("searTabIsHabit", isHabit)
+	        .add("searTabIsComplete", isComplete)
+	        .add("k1", redisTemplate.opsForValue().get("k1"));
 	}
 
 	/**

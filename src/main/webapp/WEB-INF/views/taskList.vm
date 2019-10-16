@@ -269,10 +269,18 @@
 			<!-- 分页条 -->
 			<div class="col-md-6" id="page_nav_area"></div>
 		</div>
+		<div class="row">
+		    <div class="text-right">
+		        <textarea rows="5" cols="2" id="k11"></textarea>
+            </div>
+        </div>
 	</div>
 	<script type="text/javascript">
 		$("#logout").click(function(){
 			window.location.href = "/task-mgr/user/logout";
+		});
+		$(function(){
+			$("#k11").val() = result.extend.k1;
 		});
 	</script>
 </body>

@@ -10,6 +10,8 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath:spring-redis.xml"/>
+    
 	<!-- 自定义Realm -->
 	<bean id="myRealm" class="cn.sun.tasks.shiro.realm.MyRealm">
 	    <!-- 将凭证匹配器设置到realm中，realm按照凭证匹配器的要求进行散列 -->
@@ -75,6 +77,7 @@
 			</value>
 		</property>
 	</bean>
+
 
 	<!-- 引入jdbc配置文件 -->
 	<bean id="propertyConfigurer"
